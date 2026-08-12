@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { PropertyCard } from './components/PropertyCard';
@@ -19,17 +19,29 @@ import { Footer } from './components/Footer';
 
 import { Property, CurrencyCode, FilterState, NavigationTab } from './types';
 import { SAMPLE_PROPERTIES } from './data/properties';
+import { fetchSupabaseProperties } from './lib/supabase';
 import { ShieldCheck, Sparkles, Building2, SlidersHorizontal, ArrowRight, Lock, CheckCircle2 } from 'lucide-react';
 
 export function App() {
   const [activeTab, setActiveTab] = useState<NavigationTab>('marketplace');
   const [currency, setCurrency] = useState<CurrencyCode>('NGN');
+  const [propertiesList, setPropertiesList] = useState<Property[]>(SAMPLE_PROPERTIES);
   
   const [savedPropertyIds, setSavedPropertyIds] = useState<string[]>(['nn-prop-001', 'nn-prop-002']);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [dossierProperty, setDossierProperty] = useState<Property | null>(null);
   
   const [isAIConsultantOpen, setIsAIConsultantOpen] = useState(false);
+
+  useEffect(() => {
+    async function loadProperties() {
+      const dbProps = await fetchSupabaseProperties();
+      if (dbProps && dbProps.length > 0) {
+        setPropertiesList(dbProps);
+      }
+    }
+    loadProperties();
+  }, []);
 
   const [filter, setFilter] = useState<FilterState>({
     searchQuery: '',
@@ -51,12 +63,12 @@ export function App() {
   };
 
   const savedPropertiesList = useMemo(() => {
-    return SAMPLE_PROPERTIES.filter((p) => savedPropertyIds.includes(p.id));
-  }, [savedPropertyIds]);
+    return propertiesList.filter((p) => savedPropertyIds.includes(p.id));
+  }, [savedPropertyIds, propertiesList]);
 
   // Filtered properties for marketplace grid
   const filteredProperties = useMemo(() => {
-    return SAMPLE_PROPERTIES.filter((p) => {
+    return propertiesList.filter((p) => {
       // Query filter
       if (filter.searchQuery.trim()) {
         const q = filter.searchQuery.toLowerCase();

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { InquiryFormData } from '../types';
+import { submitSupabaseInquiry } from '../lib/supabase';
 import { X, ShieldCheck, Send, CheckCircle2, Phone, Mail, Building2, MapPin } from 'lucide-react';
 
 interface InquiryModalProps {
@@ -27,10 +28,14 @@ export const InquiryModal: React.FC<InquiryModalProps> = ({
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    await submitSupabaseInquiry(formData);
     onSubmit(formData);
+    setIsSubmitting(false);
     setSubmitted(true);
   };
 

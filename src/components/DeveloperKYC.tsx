@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Building2, ShieldCheck, CheckCircle2, FileText, Lock, ArrowRight, UserCheck, Award, Sparkles } from 'lucide-react';
+import { submitSupabaseDeveloperKYC } from '../lib/supabase';
 
 export const DeveloperKYC: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -15,9 +16,13 @@ export const DeveloperKYC: React.FC = () => {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    await submitSupabaseDeveloperKYC(formData);
+    setIsSubmitting(false);
     setSubmitted(true);
   };
 
