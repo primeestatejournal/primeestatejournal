@@ -1,0 +1,6 @@
+{
+  "name": "primeestatejournal",
+  "description": "Premium Nigerian real estate SaaS platform for verified property discovery, legal due diligence, diaspora purchasing, and remote property management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
