@@ -200,48 +200,48 @@ export const InvestmentCalculator: React.FC<InvestmentCalculatorProps> = ({ curr
           </div>
 
           {/* Right Results Dashboard (5 Cols) */}
-          <div className="lg:col-span-5 bg-[#0B1F3A] text-white rounded-2xl border border-[#1E3A5F] shadow-2xl p-6 sm:p-8 space-y-6">
-            <div className="border-b border-[#1E3A5F] pb-4">
-              <span className="bg-[#D4A72C] text-[#0B1F3A] font-extrabold text-[10px] px-2.5 py-0.5 rounded uppercase tracking-wider">
+          <div className="lg:col-span-5 bg-white text-slate-900 rounded-2xl border-2 border-[#155EEF]/30 shadow-xl p-6 sm:p-8 space-y-6">
+            <div className="border-b border-slate-200 pb-4">
+              <span className="bg-[#155EEF] text-white font-extrabold text-[10px] px-2.5 py-0.5 rounded uppercase tracking-wider">
                 Financial Output
               </span>
-              <h2 className="text-2xl font-extrabold text-white font-sans mt-2">
+              <h2 className="text-2xl font-extrabold text-slate-900 font-sans mt-2">
                 Projected {inputs.holdingPeriodYears}-Year Outcome
               </h2>
             </div>
 
             {/* Total ROI Banner */}
-            <div className="bg-[#102A4E] border border-[#1E3A5F] p-5 rounded-2xl text-center">
-              <p className="text-xs text-blue-200 font-bold uppercase tracking-wider">Total Projected Net ROI</p>
-              <p className="text-4xl font-extrabold text-emerald-400 font-sans my-1">
+            <div className="bg-blue-50/80 border border-blue-200 p-5 rounded-2xl text-center">
+              <p className="text-xs text-blue-800 font-bold uppercase tracking-wider">Total Projected Net ROI</p>
+              <p className="text-4xl font-extrabold text-emerald-600 font-sans my-1">
                 +{totalROIPercent}%
               </p>
-              <p className="text-xs text-gray-300">
-                Net Profit: <span className="font-bold text-white">{formatPriceByCurrency(netProfitNGN, currency)}</span>
+              <p className="text-xs text-slate-600">
+                Net Profit: <span className="font-extrabold text-slate-900">{formatPriceByCurrency(netProfitNGN, currency)}</span>
               </p>
             </div>
 
             {/* Itemized Financial Breakdown */}
             <div className="space-y-3 text-xs">
               
-              <div className="flex justify-between items-center py-2 border-b border-[#1E3A5F]">
-                <span className="text-gray-300">Total All-In Acquisition Cost</span>
-                <span className="font-bold text-white">{formatPriceByCurrency(totalAcquisitionCostNGN, currency)}</span>
+              <div className="flex justify-between items-center py-2 border-b border-slate-200">
+                <span className="text-slate-600 font-medium">Total All-In Acquisition Cost</span>
+                <span className="font-bold text-slate-900">{formatPriceByCurrency(totalAcquisitionCostNGN, currency)}</span>
               </div>
 
-              <div className="flex justify-between items-center py-2 border-b border-[#1E3A5F]">
-                <span className="text-gray-300">Estimated Resale Property Value</span>
-                <span className="font-bold text-emerald-400">{formatPriceByCurrency(futurePropertyValueNGN, currency)}</span>
+              <div className="flex justify-between items-center py-2 border-b border-slate-200">
+                <span className="text-slate-600 font-medium">Estimated Resale Property Value</span>
+                <span className="font-bold text-emerald-700">{formatPriceByCurrency(futurePropertyValueNGN, currency)}</span>
               </div>
 
-              <div className="flex justify-between items-center py-2 border-b border-[#1E3A5F]">
-                <span className="text-gray-300">Cumulative Rental Income ({inputs.holdingPeriodYears} yrs)</span>
-                <span className="font-bold text-blue-400">{formatPriceByCurrency(totalRentalIncomeNGN, currency)}</span>
+              <div className="flex justify-between items-center py-2 border-b border-slate-200">
+                <span className="text-slate-600 font-medium">Cumulative Rental Income ({inputs.holdingPeriodYears} yrs)</span>
+                <span className="font-bold text-blue-700">{formatPriceByCurrency(totalRentalIncomeNGN, currency)}</span>
               </div>
 
-              <div className="flex justify-between items-center py-2 pt-3 text-sm font-bold">
-                <span className="text-[#D4A72C]">Gross Total Asset Portfolio Value</span>
-                <span className="text-[#D4A72C]">
+              <div className="flex justify-between items-center py-2 pt-3 text-sm font-extrabold">
+                <span className="text-[#155EEF]">Gross Total Asset Portfolio Value</span>
+                <span className="text-[#155EEF]">
                   {formatPriceByCurrency(futurePropertyValueNGN + totalRentalIncomeNGN, currency)}
                 </span>
               </div>
@@ -249,13 +249,13 @@ export const InvestmentCalculator: React.FC<InvestmentCalculatorProps> = ({ curr
             </div>
 
             {/* Safeguard Note */}
-            <div className="p-4 bg-[#102A4E]/60 border border-[#1E3A5F] rounded-xl text-xs space-y-1">
-              <p className="font-bold text-emerald-400 flex items-center gap-1">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-xs space-y-1">
+              <p className="font-bold text-emerald-700 flex items-center gap-1">
+                <ShieldCheck className="w-4 h-4 text-emerald-600" />
                 Capital Protection Guarantee
               </p>
-              <p className="text-gray-300 text-[11px] leading-snug">
-                NairaNest only verifies properties with registered titles (C of O, Governor's Consent, Excision Gazette) ensuring your capital appreciates without government acquisition risk.
+              <p className="text-slate-600 text-[11px] leading-snug font-medium">
+                PrimeEstateJournal only verifies properties with registered titles (C of O, Governor's Consent, Excision Gazette) ensuring your capital appreciates without government acquisition risk.
               </p>
             </div>
 

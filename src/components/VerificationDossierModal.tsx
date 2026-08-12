@@ -22,14 +22,14 @@ export const VerificationDossierModal: React.FC<VerificationDossierModalProps> =
   const priceDisplay = formatPriceByCurrency(property.priceNaira, currency);
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#0B1F3A]/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
       <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 text-slate-800">
         
         {/* Header */}
-        <div className="bg-[#0B1F3A] text-white p-6 sticky top-0 z-10 flex items-start justify-between border-b border-[#1E3A5F]">
+        <div className="bg-slate-900 text-white p-6 sticky top-0 z-10 flex items-start justify-between border-b border-slate-800">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+              <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                 Legal Audit Certificate
               </span>
@@ -39,7 +39,7 @@ export const VerificationDossierModal: React.FC<VerificationDossierModalProps> =
             </div>
             <h2 className="text-xl font-bold font-sans">{property.title}</h2>
             <p className="text-xs text-blue-200 flex items-center gap-1 mt-1">
-              <MapPin className="w-3.5 h-3.5 text-[#D4A72C]" />
+              <MapPin className="w-3.5 h-3.5 text-amber-400" />
               {property.location}
             </p>
           </div>

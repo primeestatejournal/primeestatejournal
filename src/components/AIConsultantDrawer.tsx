@@ -70,18 +70,18 @@ What real estate or legal due diligence question can I answer for you today?`,
   ];
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#0B1F3A]/80 backdrop-blur-sm flex justify-end">
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex justify-end">
       <div className="bg-white w-full max-w-lg h-full flex flex-col shadow-2xl border-l border-slate-200">
         
         {/* Header */}
-        <div className="bg-[#0B1F3A] text-white p-5 flex items-center justify-between border-b border-[#1E3A5F]">
+        <div className="bg-slate-900 text-white p-5 flex items-center justify-between border-b border-slate-800">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#155EEF] to-[#0B1F3A] border border-[#D4A72C] flex items-center justify-center text-[#D4A72C]">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#155EEF] to-blue-700 border border-amber-400 flex items-center justify-center text-amber-300 shadow-sm">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
               <h2 className="text-sm font-bold font-sans">AI Legal Due Diligence Advisor</h2>
-              <p className="text-[10px] text-blue-200">Powered by PrimeEstateJournal Knowledge & Gemini AI</p>
+              <p className="text-[10px] text-blue-200 font-medium">Powered by PrimeEstateJournal Knowledge & Gemini AI</p>
             </div>
           </div>
 

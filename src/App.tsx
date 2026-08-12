@@ -10,15 +10,19 @@ import { DiasporaGateway } from './components/DiasporaGateway';
 import { InvestmentCalculator } from './components/InvestmentCalculator';
 import { RemotePropertyManagement } from './components/RemotePropertyManagement';
 import { ClientPortal } from './components/ClientPortal';
+import { TitleGuide } from './components/TitleGuide';
+import { DeveloperKYC } from './components/DeveloperKYC';
+import { HelpFAQ } from './components/HelpFAQ';
+import { TermsPrivacy } from './components/TermsPrivacy';
 import { AIConsultantDrawer } from './components/AIConsultantDrawer';
 import { Footer } from './components/Footer';
 
-import { Property, CurrencyCode, FilterState } from './types';
+import { Property, CurrencyCode, FilterState, NavigationTab } from './types';
 import { SAMPLE_PROPERTIES } from './data/properties';
 import { ShieldCheck, Sparkles, Building2, SlidersHorizontal, ArrowRight, Lock, CheckCircle2 } from 'lucide-react';
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<'marketplace' | 'verification_hub' | 'diaspora_gateway' | 'investment_calc' | 'property_mgmt' | 'client_portal'>('marketplace');
+  const [activeTab, setActiveTab] = useState<NavigationTab>('marketplace');
   const [currency, setCurrency] = useState<CurrencyCode>('NGN');
   
   const [savedPropertyIds, setSavedPropertyIds] = useState<string[]>(['nn-prop-001', 'nn-prop-002']);
@@ -200,7 +204,7 @@ export function App() {
             {/* All Properties Filterable Grid */}
             <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-[#0B1F3A] font-sans">
+                <h2 className="text-2xl font-bold text-slate-900 font-sans">
                   All Verified Properties Marketplace
                 </h2>
                 <p className="text-xs text-slate-500 mt-1">
@@ -279,6 +283,31 @@ export function App() {
             onRemoveSaved={toggleSaveProperty}
             onRequestVerification={() => setActiveTab('verification_hub')}
           />
+        )}
+
+        {/* Title & Registry Guide */}
+        {activeTab === 'title_guide' && (
+          <TitleGuide
+            onRequestVerification={() => setActiveTab('verification_hub')}
+            onOpenAIConsultant={() => setIsAIConsultantOpen(true)}
+          />
+        )}
+
+        {/* Developer Accreditation Portal */}
+        {activeTab === 'developer_kyc' && (
+          <DeveloperKYC />
+        )}
+
+        {/* Help Center & FAQ */}
+        {activeTab === 'help_faq' && (
+          <HelpFAQ
+            onOpenAIConsultant={() => setIsAIConsultantOpen(true)}
+          />
+        )}
+
+        {/* Terms of Service & Privacy */}
+        {activeTab === 'terms_privacy' && (
+          <TermsPrivacy />
         )}
 
       </main>

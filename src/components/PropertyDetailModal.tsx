@@ -25,18 +25,18 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
   const priceDisplay = formatPriceByCurrency(property.priceNaira, currency);
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#0B1F3A]/85 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
       <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-slate-200 text-slate-800">
         
         {/* Sticky Header Bar */}
-        <div className="bg-[#0B1F3A] text-white p-5 sticky top-0 z-20 flex items-center justify-between border-b border-[#1E3A5F]">
+        <div className="bg-slate-900 text-white p-5 sticky top-0 z-20 flex items-center justify-between border-b border-slate-800">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="bg-[#155EEF] text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded">
                 {property.typeLabel}
               </span>
-              <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                <ShieldCheck className="w-3 h-3 text-emerald-400" />
+              <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                 {property.verificationStatus}
               </span>
             </div>
@@ -232,7 +232,7 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
               <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs space-y-1">
                 <div className="flex items-center gap-1.5 font-bold text-emerald-800">
                   <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                  NairaNest Buyer Safeguard Active
+                  PrimeEstateJournal Buyer Safeguard Active
                 </div>
                 <p className="text-slate-600 text-[11px] leading-snug">
                   100% legal title guarantee. Funds held in milestone escrow until physical survey charting & deed registration are completed.

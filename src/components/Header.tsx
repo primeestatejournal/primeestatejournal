@@ -1,10 +1,10 @@
 import React from 'react';
-import { ShieldCheck, Globe, Building2, Calculator, KeyRound, Search, Bookmark, Compass, Sparkles, ChevronDown, User } from 'lucide-react';
-import { CurrencyCode } from '../types';
+import { ShieldCheck, Globe, Building2, Calculator, KeyRound, Search, Bookmark, Compass, Sparkles, ChevronDown, User, FileText, Award, HelpCircle } from 'lucide-react';
+import { CurrencyCode, NavigationTab } from '../types';
 
 interface HeaderProps {
-  activeTab: 'marketplace' | 'verification_hub' | 'diaspora_gateway' | 'investment_calc' | 'property_mgmt' | 'client_portal';
-  setActiveTab: (tab: 'marketplace' | 'verification_hub' | 'diaspora_gateway' | 'investment_calc' | 'property_mgmt' | 'client_portal') => void;
+  activeTab: NavigationTab;
+  setActiveTab: (tab: NavigationTab) => void;
   currency: CurrencyCode;
   setCurrency: (currency: CurrencyCode) => void;
   savedCount: number;
@@ -22,12 +22,12 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAIConsultant,
 }) => {
   return (
-    <header className="sticky top-0 z-40 bg-[#0B1F3A] text-white border-b border-[#1E3A5F] shadow-lg">
+    <header className="sticky top-0 z-40 bg-white text-slate-900 border-b border-slate-200 shadow-sm">
       {/* Top Banner Notice */}
       <div className="bg-[#155EEF] px-4 py-1.5 text-xs font-medium text-white flex flex-wrap items-center justify-between gap-2">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="bg-[#D4A72C] text-[#0B1F3A] px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
+            <span className="bg-[#D4A72C] text-slate-950 px-1.5 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wider">
               Diaspora Safe
             </span>
             <span>Independent Legal Title Search & Escrow Protection across Lagos, Abuja & Rivers State.</span>
@@ -46,33 +46,33 @@ export const Header: React.FC<HeaderProps> = ({
           
           {/* Logo & Brand Name */}
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => setActiveTab('marketplace')}>
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#155EEF] to-[#0B1F3A] border border-[#D4A72C]/40 flex items-center justify-center shadow-md">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#155EEF] to-blue-700 border border-[#D4A72C]/40 flex items-center justify-center shadow-md">
               <ShieldCheck className="w-6 h-6 text-[#D4A72C]" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-xl font-bold tracking-tight text-white font-sans">
-                  primeestatejournal<span className="text-[#D4A72C]">.</span>
+                <span className="text-xl font-extrabold tracking-tight text-slate-900 font-sans">
+                  primeestatejournal
                 </span>
-                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] px-1.5 py-0.5 rounded font-semibold flex items-center gap-1">
-                  <ShieldCheck className="w-3 h-3" />
+                <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] px-1.5 py-0.5 rounded font-bold flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3 text-emerald-600" />
                   Verified
                 </span>
               </div>
-              <p className="text-[10px] text-blue-200 tracking-wider uppercase font-medium">
+              <p className="text-[10px] text-slate-500 tracking-wider uppercase font-semibold">
                 Realty & Due Diligence Platform
               </p>
             </div>
           </div>
 
           {/* Center Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1 bg-[#102A4E] p-1.5 rounded-xl border border-[#1E3A5F]">
+          <nav className="hidden lg:flex items-center gap-1 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
             <button
               onClick={() => setActiveTab('marketplace')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
                 activeTab === 'marketplace'
                   ? 'bg-[#155EEF] text-white shadow-sm'
-                  : 'text-gray-300 hover:text-white hover:bg-white/5'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
               }`}
             >
               <Building2 className="w-3.5 h-3.5" />
@@ -84,7 +84,7 @@ export const Header: React.FC<HeaderProps> = ({
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
                 activeTab === 'verification_hub'
                   ? 'bg-[#155EEF] text-white shadow-sm'
-                  : 'text-gray-300 hover:text-white hover:bg-white/5'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
               }`}
             >
               <ShieldCheck className="w-3.5 h-3.5 text-[#D4A72C]" />
@@ -96,7 +96,7 @@ export const Header: React.FC<HeaderProps> = ({
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
                 activeTab === 'diaspora_gateway'
                   ? 'bg-[#155EEF] text-white shadow-sm'
-                  : 'text-gray-300 hover:text-white hover:bg-white/5'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
               }`}
             >
               <Globe className="w-3.5 h-3.5" />
@@ -108,7 +108,7 @@ export const Header: React.FC<HeaderProps> = ({
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
                 activeTab === 'investment_calc'
                   ? 'bg-[#155EEF] text-white shadow-sm'
-                  : 'text-gray-300 hover:text-white hover:bg-white/5'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
               }`}
             >
               <Calculator className="w-3.5 h-3.5" />
@@ -120,11 +120,35 @@ export const Header: React.FC<HeaderProps> = ({
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
                 activeTab === 'property_mgmt'
                   ? 'bg-[#155EEF] text-white shadow-sm'
-                  : 'text-gray-300 hover:text-white hover:bg-white/5'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
               }`}
             >
               <KeyRound className="w-3.5 h-3.5" />
               Management
+            </button>
+
+            <button
+              onClick={() => setActiveTab('title_guide')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                activeTab === 'title_guide'
+                  ? 'bg-[#155EEF] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5 text-amber-500" />
+              Title Guide
+            </button>
+
+            <button
+              onClick={() => setActiveTab('help_faq')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                activeTab === 'help_faq'
+                  ? 'bg-[#155EEF] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
+              }`}
+            >
+              <HelpCircle className="w-3.5 h-3.5" />
+              FAQ
             </button>
           </nav>
 
@@ -133,19 +157,19 @@ export const Header: React.FC<HeaderProps> = ({
             
             {/* Currency Switcher */}
             <div className="relative group">
-              <div className="flex items-center gap-1 bg-[#102A4E] text-xs font-semibold text-gray-200 px-2.5 py-1.5 rounded-lg border border-[#1E3A5F] cursor-pointer hover:border-blue-400/50">
-                <Globe className="w-3.5 h-3.5 text-blue-400" />
+              <div className="flex items-center gap-1 bg-slate-100 text-xs font-semibold text-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-200">
+                <Globe className="w-3.5 h-3.5 text-[#155EEF]" />
                 <span>{currency}</span>
-                <ChevronDown className="w-3 h-3 text-gray-400" />
+                <ChevronDown className="w-3 h-3 text-slate-500" />
               </div>
 
-              <div className="absolute right-0 mt-1 w-28 bg-[#0B1F3A] border border-[#1E3A5F] rounded-xl shadow-xl py-1 hidden group-hover:block z-50">
+              <div className="absolute right-0 mt-1 w-28 bg-white border border-slate-200 rounded-xl shadow-xl py-1 hidden group-hover:block z-50">
                 {(['NGN', 'USD', 'GBP', 'EUR'] as CurrencyCode[]).map((c) => (
                   <button
                     key={c}
                     onClick={() => setCurrency(c)}
                     className={`w-full text-left px-3 py-1.5 text-xs font-medium hover:bg-[#155EEF] hover:text-white flex items-center justify-between ${
-                      currency === c ? 'text-[#D4A72C] font-bold' : 'text-gray-300'
+                      currency === c ? 'text-[#155EEF] font-bold' : 'text-slate-700'
                     }`}
                   >
                     <span>{c}</span>
@@ -161,22 +185,22 @@ export const Header: React.FC<HeaderProps> = ({
             {/* AI Advisor Button */}
             <button
               onClick={onOpenAIConsultant}
-              className="bg-gradient-to-r from-amber-500/20 to-amber-600/20 border border-[#D4A72C]/40 text-[#D4A72C] hover:bg-[#D4A72C] hover:text-[#0B1F3A] px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5"
+              className="bg-amber-50 border border-amber-200 text-amber-900 hover:bg-amber-100 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5"
               title="Ask AI Legal Due Diligence Advisor"
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-3.5 h-3.5 text-[#D4A72C]" />
               <span className="hidden md:inline">AI Legal Advisor</span>
             </button>
 
             {/* Saved Properties Count */}
             <button
               onClick={() => setActiveTab('client_portal')}
-              className="relative bg-[#102A4E] hover:bg-[#1E3A5F] p-2 rounded-lg text-gray-200 border border-[#1E3A5F] transition-all"
+              className="relative bg-slate-100 hover:bg-slate-200 p-2 rounded-lg text-slate-700 border border-slate-200 transition-all"
               title="My Client Portal & Saved Properties"
             >
-              <Bookmark className="w-4 h-4 text-blue-300" />
+              <Bookmark className="w-4 h-4 text-[#155EEF]" />
               {savedCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[#D4A72C] text-[#0B1F3A] font-bold text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-[#D4A72C] text-slate-950 font-extrabold text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
                   {savedCount}
                 </span>
               )}
@@ -185,7 +209,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Submit Property Verification CTA */}
             <button
               onClick={onRequestVerification}
-              className="hidden sm:flex bg-[#155EEF] hover:bg-blue-600 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all items-center gap-1.5 border border-blue-400/30"
+              className="hidden sm:flex bg-[#155EEF] hover:bg-blue-600 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all items-center gap-1.5"
             >
               <ShieldCheck className="w-4 h-4" />
               Verify Property
@@ -196,22 +220,22 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={() => setActiveTab('client_portal')}
               className={`p-2 rounded-lg text-xs font-semibold border transition-all flex items-center gap-1 ${
                 activeTab === 'client_portal'
-                  ? 'bg-[#155EEF] border-blue-400 text-white'
-                  : 'bg-[#102A4E] border-[#1E3A5F] text-gray-300 hover:text-white'
+                  ? 'bg-[#155EEF] border-blue-500 text-white'
+                  : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
               }`}
               title="Client Portal"
             >
-              <User className="w-4 h-4 text-gray-200" />
+              <User className="w-4 h-4 text-slate-700" />
             </button>
           </div>
         </div>
 
         {/* Mobile Navigation Row */}
-        <div className="lg:hidden flex items-center justify-between overflow-x-auto py-2 border-t border-[#1E3A5F] no-scrollbar text-xs">
+        <div className="lg:hidden flex items-center justify-between overflow-x-auto py-2 border-t border-slate-200 no-scrollbar text-xs">
           <button
             onClick={() => setActiveTab('marketplace')}
             className={`px-3 py-1 rounded-full whitespace-nowrap font-medium ${
-              activeTab === 'marketplace' ? 'bg-[#155EEF] text-white' : 'text-gray-300'
+              activeTab === 'marketplace' ? 'bg-[#155EEF] text-white' : 'text-slate-600'
             }`}
           >
             Marketplace
@@ -219,7 +243,7 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={() => setActiveTab('verification_hub')}
             className={`px-3 py-1 rounded-full whitespace-nowrap font-medium flex items-center gap-1 ${
-              activeTab === 'verification_hub' ? 'bg-[#155EEF] text-white' : 'text-gray-300'
+              activeTab === 'verification_hub' ? 'bg-[#155EEF] text-white' : 'text-slate-600'
             }`}
           >
             <ShieldCheck className="w-3 h-3 text-[#D4A72C]" />
@@ -228,7 +252,7 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={() => setActiveTab('diaspora_gateway')}
             className={`px-3 py-1 rounded-full whitespace-nowrap font-medium ${
-              activeTab === 'diaspora_gateway' ? 'bg-[#155EEF] text-white' : 'text-gray-300'
+              activeTab === 'diaspora_gateway' ? 'bg-[#155EEF] text-white' : 'text-slate-600'
             }`}
           >
             Diaspora Gateway
@@ -236,7 +260,7 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={() => setActiveTab('investment_calc')}
             className={`px-3 py-1 rounded-full whitespace-nowrap font-medium ${
-              activeTab === 'investment_calc' ? 'bg-[#155EEF] text-white' : 'text-gray-300'
+              activeTab === 'investment_calc' ? 'bg-[#155EEF] text-white' : 'text-slate-600'
             }`}
           >
             ROI Calculator
@@ -244,10 +268,26 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={() => setActiveTab('property_mgmt')}
             className={`px-3 py-1 rounded-full whitespace-nowrap font-medium ${
-              activeTab === 'property_mgmt' ? 'bg-[#155EEF] text-white' : 'text-gray-300'
+              activeTab === 'property_mgmt' ? 'bg-[#155EEF] text-white' : 'text-slate-600'
             }`}
           >
             Management
+          </button>
+          <button
+            onClick={() => setActiveTab('title_guide')}
+            className={`px-3 py-1 rounded-full whitespace-nowrap font-medium ${
+              activeTab === 'title_guide' ? 'bg-[#155EEF] text-white' : 'text-slate-600'
+            }`}
+          >
+            Title Guide
+          </button>
+          <button
+            onClick={() => setActiveTab('help_faq')}
+            className={`px-3 py-1 rounded-full whitespace-nowrap font-medium ${
+              activeTab === 'help_faq' ? 'bg-[#155EEF] text-white' : 'text-slate-600'
+            }`}
+          >
+            Help & FAQ
           </button>
         </div>
       </div>

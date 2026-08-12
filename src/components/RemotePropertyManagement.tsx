@@ -53,13 +53,13 @@ export const RemotePropertyManagement: React.FC<RemotePropertyManagementProps> =
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
             <div className="inline-flex items-center gap-2 bg-[#155EEF]/10 border border-[#155EEF]/20 text-[#155EEF] px-3.5 py-1.5 rounded-full text-xs font-bold mb-2">
-              <KeyRound className="w-4 h-4 text-[#D4A72C]" />
+              <KeyRound className="w-4 h-4 text-amber-600" />
               PrimeEstateJournal Remote Property Management™
             </div>
-            <h1 className="text-3xl font-extrabold text-[#0B1F3A] font-sans tracking-tight">
+            <h1 className="text-3xl font-extrabold text-slate-900 font-sans tracking-tight">
               Manage Your Nigerian Real Estate From Anywhere
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 mt-1">
+            <p className="text-xs sm:text-sm text-slate-600 mt-1 font-medium">
               Live tenant rent collection, maintenance request approvals, and state tax compliance tracking for landlords in the diaspora.
             </p>
           </div>

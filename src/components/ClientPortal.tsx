@@ -27,49 +27,49 @@ export const ClientPortal: React.FC<ClientPortalProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* User Profile Header Banner */}
-        <div className="bg-[#0B1F3A] text-white rounded-2xl p-6 sm:p-8 shadow-xl border border-[#1E3A5F] mb-8">
+        <div className="bg-white text-slate-900 rounded-2xl p-6 sm:p-8 shadow-md border border-slate-200 mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#155EEF] to-[#0B1F3A] border-2 border-[#D4A72C] flex items-center justify-center font-bold text-xl text-white shadow-md">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#155EEF] to-blue-700 border-2 border-amber-400 flex items-center justify-center font-bold text-xl text-white shadow-md">
                 BO
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-xl font-bold font-sans">Dr. Babatunde Ogunlesi</h1>
-                  <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                    <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                  <h1 className="text-xl font-bold font-sans text-slate-900">Dr. Babatunde Ogunlesi</h1>
+                  <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                     Identity Verified
                   </span>
                 </div>
-                <p className="text-xs text-blue-200 mt-1">
-                  Primary Location: <span className="text-white font-medium">London, United Kingdom</span> | Registered Diaspora Investor
+                <p className="text-xs text-slate-600 mt-1 font-medium">
+                  Primary Location: <span className="text-slate-900 font-bold">London, United Kingdom</span> | Registered Diaspora Investor
                 </p>
               </div>
             </div>
 
             {/* Role Switcher */}
-            <div className="bg-[#102A4E] p-1.5 rounded-xl border border-[#1E3A5F] flex items-center gap-1">
+            <div className="bg-slate-100 p-1.5 rounded-xl border border-slate-200 flex items-center gap-1">
               <button
                 onClick={() => setUserRole('diaspora')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  userRole === 'diaspora' ? 'bg-[#155EEF] text-white' : 'text-gray-300 hover:text-white'
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  userRole === 'diaspora' ? 'bg-[#155EEF] text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 Diaspora Buyer
               </button>
               <button
                 onClick={() => setUserRole('local')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  userRole === 'local' ? 'bg-[#155EEF] text-white' : 'text-gray-300 hover:text-white'
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  userRole === 'local' ? 'bg-[#155EEF] text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 Local Buyer
               </button>
               <button
                 onClick={() => setUserRole('developer')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  userRole === 'developer' ? 'bg-[#155EEF] text-white' : 'text-gray-300 hover:text-white'
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  userRole === 'developer' ? 'bg-[#155EEF] text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 Developer

@@ -84,15 +84,15 @@ export const PropertyVerificationHub: React.FC<PropertyVerificationHubProps> = (
         </div>
 
         {/* Live Search Reference Tracker Bar */}
-        <div className="bg-[#0B1F3A] text-white p-6 rounded-2xl shadow-xl border border-[#1E3A5F] mb-12">
+        <div className="bg-white text-slate-900 p-6 rounded-2xl shadow-md border border-slate-200 mb-12">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h2 className="text-base font-bold flex items-center gap-2 font-sans">
-                <Search className="w-4 h-4 text-[#D4A72C]" />
+              <h2 className="text-base font-bold flex items-center gap-2 font-sans text-slate-900">
+                <Search className="w-4 h-4 text-[#155EEF]" />
                 Track Active Legal Search Request
               </h2>
-              <p className="text-xs text-blue-200 mt-1">
-                Enter your PrimeEstateJournal Verification Reference (e.g. <span className="font-mono text-[#D4A72C]">PEJ-882190</span>) to view live registry search status.
+              <p className="text-xs text-slate-600 mt-1 font-medium">
+                Enter your PrimeEstateJournal Verification Reference (e.g. <span className="font-mono text-[#155EEF] font-bold">PEJ-882190</span>) to view live registry search status.
               </p>
             </div>
 
@@ -102,11 +102,11 @@ export const PropertyVerificationHub: React.FC<PropertyVerificationHubProps> = (
                 value={trackRefInput}
                 onChange={(e) => setTrackRefInput(e.target.value)}
                 placeholder="Enter NNV- Reference Code..."
-                className="bg-[#102A4E] border border-[#1E3A5F] rounded-xl px-4 py-2 text-xs text-white placeholder-gray-400 focus:outline-none focus:border-[#155EEF] w-full md:w-64"
+                className="bg-slate-50 border border-slate-300 rounded-xl px-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#155EEF] w-full md:w-64"
               />
               <button
                 type="submit"
-                className="bg-[#155EEF] hover:bg-blue-600 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all shrink-0"
+                className="bg-[#155EEF] hover:bg-blue-600 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all shrink-0 shadow-sm"
               >
                 Track Audit
               </button>
@@ -115,26 +115,26 @@ export const PropertyVerificationHub: React.FC<PropertyVerificationHubProps> = (
 
           {/* Track Result Display */}
           {trackedResult && (
-            <div className="mt-6 pt-6 border-t border-[#1E3A5F] bg-[#102A4E] p-4 rounded-xl text-xs space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#1E3A5F] pb-3">
+            <div className="mt-6 pt-6 border-t border-slate-200 bg-slate-50 p-4 rounded-xl text-xs space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
                 <div>
-                  <span className="text-[10px] text-[#D4A72C] font-bold uppercase">Audit File #{trackedResult.ref}</span>
-                  <p className="font-bold text-white text-sm">{trackedResult.propertyName}</p>
+                  <span className="text-[10px] text-[#155EEF] font-bold uppercase">Audit File #{trackedResult.ref}</span>
+                  <p className="font-bold text-slate-900 text-sm">{trackedResult.propertyName}</p>
                 </div>
-                <div className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-3 py-1 rounded-full font-bold text-[11px] flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5" />
+                <div className="bg-amber-100 text-amber-900 border border-amber-300 px-3 py-1 rounded-full font-bold text-[11px] flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5 text-amber-700" />
                   {trackedResult.status}
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                 {trackedResult.steps.map((st: any, i: number) => (
-                  <div key={i} className={`p-3 rounded-lg border ${st.completed ? 'bg-emerald-950/30 border-emerald-500/30 text-emerald-200' : 'bg-[#0B1F3A] border-[#1E3A5F] text-gray-400'}`}>
+                  <div key={i} className={`p-3 rounded-lg border ${st.completed ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-white border-slate-200 text-slate-500'}`}>
                     <div className="flex items-center gap-2 font-bold text-[11px] mb-1">
-                      {st.completed ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> : <Clock className="w-3.5 h-3.5 text-gray-500" />}
+                      {st.completed ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> : <Clock className="w-3.5 h-3.5 text-slate-400" />}
                       <span>Step {i + 1}</span>
                     </div>
-                    <p className="font-medium text-white text-[11px]">{st.name}</p>
+                    <p className="font-semibold text-slate-800 text-[11px]">{st.name}</p>
                   </div>
                 ))}
               </div>

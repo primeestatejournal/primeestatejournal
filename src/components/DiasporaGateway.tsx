@@ -28,19 +28,19 @@ export const DiasporaGateway: React.FC<DiasporaGatewayProps> = ({ currency, setC
   };
 
   return (
-    <div className="py-10 bg-[#0B1F3A] text-white min-h-screen">
+    <div className="py-10 bg-slate-50 text-slate-900 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 bg-[#102A4E] border border-[#D4A72C]/40 text-[#D4A72C] px-3.5 py-1.5 rounded-full text-xs font-bold mb-3">
-            <Globe className="w-4 h-4 text-[#D4A72C]" />
+          <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-300 text-amber-900 px-3.5 py-1.5 rounded-full text-xs font-bold mb-3 shadow-sm">
+            <Globe className="w-4 h-4 text-amber-600" />
             PrimeEstateJournal Diaspora Gateway™
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-white font-sans tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 font-sans tracking-tight">
             Buy Nigerian Property From Abroad Without Stress or Risk
           </h1>
-          <p className="mt-3 text-sm sm:text-base text-gray-300 leading-relaxed">
+          <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed font-medium">
             Eliminate family disputes, fake title documents, and dishonest middleman markup. We provide independent legal verification, live video walkthroughs, and milestone escrow security.
           </p>
         </div>
@@ -48,42 +48,42 @@ export const DiasporaGateway: React.FC<DiasporaGatewayProps> = ({ currency, setC
         {/* 4 Pillars of Diaspora Security */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-14">
           
-          <div className="bg-[#102A4E] border border-[#1E3A5F] p-5 rounded-2xl">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center mb-3">
-              <ShieldCheck className="w-5 h-5 text-[#D4A72C]" />
+          <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-sm">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center mb-3">
+              <ShieldCheck className="w-5 h-5 text-amber-600" />
             </div>
-            <h3 className="text-sm font-bold text-white mb-1">Independent Legal Search</h3>
-            <p className="text-xs text-gray-300 leading-relaxed">
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Independent Legal Search</h3>
+            <p className="text-xs text-slate-600 leading-relaxed font-medium">
               We search Lands Registry in Ikeja Alausa, Abuja AGIS, or Rivers Ministry directly—not through the developer's agent.
             </p>
           </div>
 
-          <div className="bg-[#102A4E] border border-[#1E3A5F] p-5 rounded-2xl">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center mb-3">
-              <Video className="w-5 h-5 text-emerald-400" />
+          <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-sm">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mb-3">
+              <Video className="w-5 h-5 text-emerald-600" />
             </div>
-            <h3 className="text-sm font-bold text-white mb-1">4K Drone Inspection</h3>
-            <p className="text-xs text-gray-300 leading-relaxed">
+            <h3 className="text-sm font-bold text-slate-900 mb-1">4K Drone Inspection</h3>
+            <p className="text-xs text-slate-600 leading-relaxed font-medium">
               Live stream 1-on-1 walkthroughs with GPS coordinate verification showing topography, drainage, and street access.
             </p>
           </div>
 
-          <div className="bg-[#102A4E] border border-[#1E3A5F] p-5 rounded-2xl">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-[#D4A72C] border border-amber-500/30 flex items-center justify-center mb-3">
-              <Lock className="w-5 h-5 text-[#D4A72C]" />
+          <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-sm">
+            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center mb-3">
+              <Lock className="w-5 h-5 text-amber-600" />
             </div>
-            <h3 className="text-sm font-bold text-white mb-1">Milestone Escrow</h3>
-            <p className="text-xs text-gray-300 leading-relaxed">
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Milestone Escrow</h3>
+            <p className="text-xs text-slate-600 leading-relaxed font-medium">
               Your funds are held safely in escrow and disbursed to developers only upon verified construction milestones.
             </p>
           </div>
 
-          <div className="bg-[#102A4E] border border-[#1E3A5F] p-5 rounded-2xl">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center mb-3">
-              <FileText className="w-5 h-5 text-purple-400" />
+          <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-sm">
+            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center mb-3">
+              <FileText className="w-5 h-5 text-purple-600" />
             </div>
-            <h3 className="text-sm font-bold text-white mb-1">Power of Attorney (PoA)</h3>
-            <p className="text-xs text-gray-300 leading-relaxed">
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Power of Attorney (PoA)</h3>
+            <p className="text-xs text-slate-600 leading-relaxed font-medium">
               Standard legal PoA templates restricted strictly to title perfection and deed registration on your behalf.
             </p>
           </div>
@@ -91,13 +91,13 @@ export const DiasporaGateway: React.FC<DiasporaGatewayProps> = ({ currency, setC
         </div>
 
         {/* Currency & Valuation Benchmark Section */}
-        <div className="bg-[#102A4E] border border-[#1E3A5F] rounded-2xl p-6 sm:p-8 mb-14 shadow-2xl">
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 mb-14 shadow-lg">
           <div className="max-w-2xl mx-auto text-center mb-8">
-            <h2 className="text-xl font-bold text-white font-sans flex items-center justify-center gap-2">
-              <Globe className="w-5 h-5 text-[#D4A72C]" />
+            <h2 className="text-xl font-bold text-slate-900 font-sans flex items-center justify-center gap-2">
+              <Globe className="w-5 h-5 text-[#155EEF]" />
               Live Diaspora Currency Benchmark
             </h2>
-            <p className="text-xs text-gray-300 mt-1">
+            <p className="text-xs text-slate-600 mt-1 font-medium">
               Select your foreign currency to benchmark Nigerian real estate prices in real-time.
             </p>
           </div>
@@ -105,10 +105,10 @@ export const DiasporaGateway: React.FC<DiasporaGatewayProps> = ({ currency, setC
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             
             {/* Input Slider */}
-            <div className="space-y-4 bg-[#0B1F3A] p-6 rounded-xl border border-[#1E3A5F]">
-              <div className="flex items-center justify-between text-xs font-bold text-gray-200">
+            <div className="space-y-4 bg-slate-50 p-6 rounded-xl border border-slate-200">
+              <div className="flex items-center justify-between text-xs font-bold text-slate-800">
                 <span>Property Price in Naira (NGN)</span>
-                <span className="text-[#D4A72C] text-sm">₦{(calculatorNaira / 1000000).toFixed(1)} Million</span>
+                <span className="text-[#155EEF] text-sm">₦{(calculatorNaira / 1000000).toFixed(1)} Million</span>
               </div>
 
               <input
@@ -121,7 +121,7 @@ export const DiasporaGateway: React.FC<DiasporaGatewayProps> = ({ currency, setC
                 className="w-full accent-[#155EEF] cursor-pointer"
               />
 
-              <div className="flex items-center justify-between text-[10px] text-gray-400">
+              <div className="flex items-center justify-between text-[10px] text-slate-500 font-semibold">
                 <span>₦20 Million ($13k)</span>
                 <span>₦500 Million ($330k)</span>
                 <span>₦1 Billion ($670k)</span>
@@ -130,23 +130,23 @@ export const DiasporaGateway: React.FC<DiasporaGatewayProps> = ({ currency, setC
 
             {/* Currency Outputs */}
             <div className="grid grid-cols-3 gap-3 text-center">
-              <div className="bg-[#0B1F3A] border border-[#1E3A5F] p-4 rounded-xl">
-                <p className="text-[10px] text-gray-400 font-bold uppercase">USD Value ($)</p>
-                <p className="text-lg font-extrabold text-emerald-400 mt-1">
+              <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                <p className="text-[10px] text-slate-500 font-bold uppercase">USD Value ($)</p>
+                <p className="text-lg font-extrabold text-emerald-700 mt-1">
                   {formatPriceByCurrency(calculatorNaira, 'USD')}
                 </p>
               </div>
 
-              <div className="bg-[#0B1F3A] border border-[#1E3A5F] p-4 rounded-xl">
-                <p className="text-[10px] text-gray-400 font-bold uppercase">GBP Value (£)</p>
-                <p className="text-lg font-extrabold text-blue-400 mt-1">
+              <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                <p className="text-[10px] text-slate-500 font-bold uppercase">GBP Value (£)</p>
+                <p className="text-lg font-extrabold text-blue-700 mt-1">
                   {formatPriceByCurrency(calculatorNaira, 'GBP')}
                 </p>
               </div>
 
-              <div className="bg-[#0B1F3A] border border-[#1E3A5F] p-4 rounded-xl">
-                <p className="text-[10px] text-gray-400 font-bold uppercase">EUR Value (€)</p>
-                <p className="text-lg font-extrabold text-amber-400 mt-1">
+              <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                <p className="text-[10px] text-slate-500 font-bold uppercase">EUR Value (€)</p>
+                <p className="text-lg font-extrabold text-amber-700 mt-1">
                   {formatPriceByCurrency(calculatorNaira, 'EUR')}
                 </p>
               </div>

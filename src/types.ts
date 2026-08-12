@@ -1,3 +1,15 @@
+export type NavigationTab = 
+  | 'marketplace' 
+  | 'verification_hub' 
+  | 'diaspora_gateway' 
+  | 'investment_calc' 
+  | 'property_mgmt' 
+  | 'client_portal'
+  | 'title_guide'
+  | 'developer_kyc'
+  | 'help_faq'
+  | 'terms_privacy';
+
 export type CurrencyCode = 'NGN' | 'USD' | 'GBP' | 'EUR';
 
 export type PropertyCategory = 
@@ -155,4 +167,17 @@ export interface ROICalculatorInput {
   includeLegalFees: boolean; // 5% Deed & Legal
   includeSurveyFees: boolean; // ₦500k avg
   includeStampDuty: boolean; // 3%
+}
+
+export interface InquiryFormData {
+  propertyId?: string;
+  propertyTitle?: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  investorType: 'Private Buyer' | 'Institutional Investor' | 'Family Office' | 'Developer' | 'Broker';
+  preferredContact: 'Email' | 'Phone' | 'WhatsApp';
+  message: string;
+  requestTitleDocument: boolean;
+  requestVirtualTour: boolean;
 }
