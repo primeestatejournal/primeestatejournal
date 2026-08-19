@@ -25,23 +25,64 @@ import { ShieldCheck, Sparkles, Building2, SlidersHorizontal, ArrowRight, Lock, 
 export function App() {
   const [activeTab, setActiveTab] = useState<NavigationTab>('marketplace');
   const [currency, setCurrency] = useState<CurrencyCode>('NGN');
-  const [propertiesList, setPropertiesList] = useState<Property[]>(SAMPLE_PROPERTIES);
+  const [propertiesList, setPropertiesList] = useState<Property[]>([]);
+  const [isLoadingProps, setIsLoadingProps] = useState(false);
   
-  const [savedPropertyIds, setSavedPropertyIds] = useState<string[]>(['nn-prop-001', 'nn-prop-002']);
+  const [savedPropertyIds, setSavedPropertyIds] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('pej_saved_property_ids');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          // Remove old demo property IDs
+          return parsed.filter((id) => typeof id === 'string' && !id.startsWith('nn-prop-'));
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    return [];
+  });
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [dossierProperty, setDossierProperty] = useState<Property | null>(null);
   
   const [isAIConsultantOpen, setIsAIConsultantOpen] = useState(false);
 
-  useEffect(() => {
-    async function loadProperties() {
+  const loadProperties = async () => {
+    setIsLoadingProps(true);
+    try {
       const dbProps = await fetchSupabaseProperties();
       if (dbProps && dbProps.length > 0) {
         setPropertiesList(dbProps);
+      } else {
+        setPropertiesList([]);
       }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoadingProps(false);
     }
+  };
+
+  useEffect(() => {
+    // Clear any obsolete demo keys in localStorage
+    try {
+      const keysToCheck = ['pej_demo_properties', 'pej_sample_properties', 'prime_estate_demo_properties'];
+      keysToCheck.forEach((key) => localStorage.removeItem(key));
+    } catch (e) {
+      console.error(e);
+    }
+
     loadProperties();
   }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('pej_saved_property_ids', JSON.stringify(savedPropertyIds));
+    } catch (e) {
+      console.error(e);
+    }
+  }, [savedPropertyIds]);
 
   const [filter, setFilter] = useState<FilterState>({
     searchQuery: '',
@@ -99,23 +140,23 @@ export function App() {
       }
 
       // Toggles
-      if (filter.verifiedOnly && p.dossier.legalRiskScore < 98) return false;
+      if (filter.verifiedOnly && (p.dossier?.legalRiskScore || 0) < 98) return false;
       if (filter.diasporaOnly && !p.escrowProtected) return false;
 
       return true;
     }).sort((a, b) => {
       if (filter.sortBy === 'price-asc') return a.priceNaira - b.priceNaira;
       if (filter.sortBy === 'price-desc') return b.priceNaira - a.priceNaira;
-      if (filter.sortBy === 'highest-yield') return b.dossier.legalRiskScore - a.dossier.legalRiskScore;
+      if (filter.sortBy === 'highest-yield') return (b.dossier?.legalRiskScore || 0) - (a.dossier?.legalRiskScore || 0);
       return 0; // recommended
     });
-  }, [filter]);
+  }, [filter, propertiesList]);
 
   // Carousel Groupings
-  const diasporaPicks = useMemo(() => SAMPLE_PROPERTIES.filter((p) => p.carouselCategories.includes('diaspora_favorites')), []);
-  const verifiedLands = useMemo(() => SAMPLE_PROPERTIES.filter((p) => p.category === 'residential_land' || p.category === 'commercial_land'), []);
-  const luxuryResidences = useMemo(() => SAMPLE_PROPERTIES.filter((p) => p.category === 'luxury_apartment' || p.category === 'duplex_terrace'), []);
-  const abujaPrime = useMemo(() => SAMPLE_PROPERTIES.filter((p) => p.state === 'Abuja FCT'), []);
+  const diasporaPicks = useMemo(() => propertiesList.filter((p) => p.carouselCategories?.includes('diaspora_favorites')), [propertiesList]);
+  const verifiedLands = useMemo(() => propertiesList.filter((p) => p.category === 'residential_land' || p.category === 'commercial_land'), [propertiesList]);
+  const luxuryResidences = useMemo(() => propertiesList.filter((p) => p.category === 'luxury_apartment' || p.category === 'duplex_terrace'), [propertiesList]);
+  const abujaPrime = useMemo(() => propertiesList.filter((p) => p.state === 'Abuja FCT'), [propertiesList]);
 
   return (
     <div className="min-h-screen bg-[#F7F9FC] text-slate-800 flex flex-col font-sans selection:bg-[#155EEF] selection:text-white">
@@ -225,26 +266,56 @@ export function App() {
               </div>
 
               {filteredProperties.length === 0 ? (
-                <div className="bg-white p-12 rounded-2xl border border-slate-200 text-center space-y-3">
-                  <p className="text-base font-bold text-slate-800">No properties match your filter.</p>
-                  <p className="text-xs text-slate-500">Try clearing your search keyword or switching category tabs.</p>
-                  <button
-                    onClick={() => setFilter({
-                      searchQuery: '',
-                      category: 'all',
-                      state: '',
-                      district: '',
-                      minPrice: 0,
-                      maxPrice: 1000000000,
-                      sortBy: 'recommended',
-                      verifiedOnly: false,
-                      diasporaOnly: false,
-                      titleFilter: '',
-                    })}
-                    className="bg-[#155EEF] text-white text-xs font-bold px-4 py-2 rounded-xl"
-                  >
-                    Reset Filters
-                  </button>
+                <div className="bg-white p-12 rounded-2xl border border-slate-200 text-center space-y-4 shadow-sm">
+                  <div className="w-12 h-12 rounded-full bg-blue-50 text-[#155EEF] flex items-center justify-center mx-auto">
+                    <Building2 className="w-6 h-6" />
+                  </div>
+                  {propertiesList.length === 0 ? (
+                    <>
+                      <p className="text-base font-bold text-slate-800">No properties in database yet</p>
+                      <p className="text-xs text-slate-500 max-w-md mx-auto">
+                        All demo properties have been cleared. As verified properties are registered or fetched from your connected Supabase database, they will be displayed here.
+                      </p>
+                      <div className="flex items-center justify-center gap-3 pt-2">
+                        <button
+                          onClick={loadProperties}
+                          disabled={isLoadingProps}
+                          className="bg-[#155EEF] hover:bg-blue-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2"
+                        >
+                          <Sparkles className="w-3.5 h-3.5" />
+                          {isLoadingProps ? 'Checking Supabase...' : 'Refresh Database'}
+                        </button>
+                        <button
+                          onClick={() => setActiveTab('client_portal')}
+                          className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-4 py-2.5 rounded-xl transition-all"
+                        >
+                          View Supabase Setup Desk
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-base font-bold text-slate-800">No properties match your filter.</p>
+                      <p className="text-xs text-slate-500">Try clearing your search keyword or switching category tabs.</p>
+                      <button
+                        onClick={() => setFilter({
+                          searchQuery: '',
+                          category: 'all',
+                          state: '',
+                          district: '',
+                          minPrice: 0,
+                          maxPrice: 1000000000,
+                          sortBy: 'recommended',
+                          verifiedOnly: false,
+                          diasporaOnly: false,
+                          titleFilter: '',
+                        })}
+                        className="bg-[#155EEF] text-white text-xs font-bold px-4 py-2 rounded-xl"
+                      >
+                        Reset Filters
+                      </button>
+                    </>
+                  )}
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
