@@ -16,13 +16,16 @@ import { HelpFAQ } from './components/HelpFAQ';
 import { TermsPrivacy } from './components/TermsPrivacy';
 import { AIConsultantDrawer } from './components/AIConsultantDrawer';
 import { Footer } from './components/Footer';
+import { PublicBlog } from './components/PublicBlog';
+import { AdminDashboard } from './components/admin/AdminDashboard';
+import { AuthProvider } from './context/AuthContext';
 
 import { Property, CurrencyCode, FilterState, NavigationTab } from './types';
 import { SAMPLE_PROPERTIES } from './data/properties';
 import { fetchSupabaseProperties } from './lib/supabase';
 import { ShieldCheck, Sparkles, Building2, SlidersHorizontal, ArrowRight, Lock, CheckCircle2 } from 'lucide-react';
 
-export function App() {
+function AppContent() {
   const [activeTab, setActiveTab] = useState<NavigationTab>('marketplace');
   const [currency, setCurrency] = useState<CurrencyCode>('NGN');
   const [propertiesList, setPropertiesList] = useState<Property[]>([]);
@@ -157,6 +160,17 @@ export function App() {
   const verifiedLands = useMemo(() => propertiesList.filter((p) => p.category === 'residential_land' || p.category === 'commercial_land'), [propertiesList]);
   const luxuryResidences = useMemo(() => propertiesList.filter((p) => p.category === 'luxury_apartment' || p.category === 'duplex_terrace'), [propertiesList]);
   const abujaPrime = useMemo(() => propertiesList.filter((p) => p.state === 'Abuja FCT'), [propertiesList]);
+
+  if (activeTab === 'admin') {
+    return (
+      <AdminDashboard
+        onReturnToSite={() => {
+          setActiveTab('marketplace');
+          loadProperties();
+        }}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F7F9FC] text-slate-800 flex flex-col font-sans selection:bg-[#155EEF] selection:text-white">
@@ -376,6 +390,11 @@ export function App() {
           />
         )}
 
+        {/* Market Intelligence Blog */}
+        {activeTab === 'blog' && (
+          <PublicBlog onOpenAdmin={() => setActiveTab('admin')} />
+        )}
+
         {/* Developer Accreditation Portal */}
         {activeTab === 'developer_kyc' && (
           <DeveloperKYC />
@@ -444,6 +463,20 @@ export function App() {
 
     </div>
   );
+}
+
+export function App() {
+  return (
+    <AuthProvider>
+      <AppWithRouting />
+    </AuthProvider>
+  );
+}
+
+function AppWithRouting() {
+  const [isAdminRoute, setIsAdminRoute] = useState(false);
+
+  return <AppContent />;
 }
 
 export default App;

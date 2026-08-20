@@ -8,7 +8,9 @@ export type NavigationTab =
   | 'title_guide'
   | 'developer_kyc'
   | 'help_faq'
-  | 'terms_privacy';
+  | 'terms_privacy'
+  | 'admin'
+  | 'blog';
 
 export type CurrencyCode = 'NGN' | 'USD' | 'GBP' | 'EUR';
 
@@ -181,3 +183,46 @@ export interface InquiryFormData {
   requestTitleDocument: boolean;
   requestVirtualTour: boolean;
 }
+
+// ----------------------------------------------------
+// Supabase Database Models & Admin Dashboard Types
+// ----------------------------------------------------
+
+export interface Profile {
+  id: string; // UUID primary key linked to auth.users
+  full_name: string | null;
+  email: string | null;
+  role: string; // default 'admin'
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface DbProperty {
+  id: string; // UUID
+  title: string;
+  description: string;
+  price_naira: number;
+  agent_whatsapp: string;
+  agent_call_number: string;
+  featured_image_url: string;
+  gallery_image_url_1?: string | null;
+  gallery_image_url_2?: string | null;
+  gallery_image_url_3?: string | null;
+  gallery_image_url_4?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface DbBlogPost {
+  id: string; // UUID
+  title: string;
+  content: string; // Stores HTML string
+  featured_image_url: string;
+  author_id?: string | null;
+  author_name?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export type AdminDashboardView = 'overview' | 'properties' | 'blog' | 'profile' | 'database';
+

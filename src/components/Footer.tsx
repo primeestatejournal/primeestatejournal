@@ -83,6 +83,11 @@ export const Footer: React.FC<FooterProps> = ({
                 </button>
               </li>
               <li>
+                <button onClick={() => setActiveTab('blog')} className="hover:text-slate-900 transition-colors font-bold text-amber-700">
+                  Market Intelligence Journal
+                </button>
+              </li>
+              <li>
                 <button onClick={() => setActiveTab('developer_kyc')} className="hover:text-slate-900 transition-colors font-bold text-[#155EEF]">
                   Developer Accreditation Portal
                 </button>
@@ -90,6 +95,12 @@ export const Footer: React.FC<FooterProps> = ({
               <li>
                 <button onClick={() => setActiveTab('help_faq')} className="hover:text-slate-900 transition-colors">
                   Help Center & Diaspora FAQ
+                </button>
+              </li>
+              <li>
+                <button onClick={() => setActiveTab('admin')} className="hover:text-slate-900 transition-colors font-bold text-slate-900 flex items-center gap-1">
+                  <span>Executive Admin Dashboard</span>
+                  <ArrowUpRight className="w-3 h-3 text-amber-600" />
                 </button>
               </li>
             </ul>

@@ -140,6 +140,18 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
 
             <button
+              onClick={() => setActiveTab('blog')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                activeTab === 'blog'
+                  ? 'bg-[#155EEF] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
+              }`}
+            >
+              <Award className="w-3.5 h-3.5 text-[#D4A72C]" />
+              Editorial Journal
+            </button>
+
+            <button
               onClick={() => setActiveTab('help_faq')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
                 activeTab === 'help_faq'
@@ -154,6 +166,16 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Right Action Tools */}
           <div className="flex items-center gap-2 sm:gap-3">
+            
+            {/* Admin Dashboard CTA Button */}
+            <button
+              onClick={() => setActiveTab('admin')}
+              className="bg-slate-900 hover:bg-slate-800 text-amber-300 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
+              title="Access Admin Management Portal"
+            >
+              <KeyRound className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden sm:inline">Admin Portal</span>
+            </button>
             
             {/* Currency Switcher */}
             <div className="relative group">
@@ -282,12 +304,30 @@ export const Header: React.FC<HeaderProps> = ({
             Title Guide
           </button>
           <button
+            onClick={() => setActiveTab('blog')}
+            className={`px-3 py-1 rounded-full whitespace-nowrap font-medium flex items-center gap-1 ${
+              activeTab === 'blog' ? 'bg-[#155EEF] text-white' : 'text-slate-600'
+            }`}
+          >
+            <Award className="w-3 h-3 text-[#D4A72C]" />
+            Editorial Journal
+          </button>
+          <button
             onClick={() => setActiveTab('help_faq')}
             className={`px-3 py-1 rounded-full whitespace-nowrap font-medium ${
               activeTab === 'help_faq' ? 'bg-[#155EEF] text-white' : 'text-slate-600'
             }`}
           >
             Help & FAQ
+          </button>
+          <button
+            onClick={() => setActiveTab('admin')}
+            className={`px-3 py-1 rounded-full whitespace-nowrap font-bold flex items-center gap-1 ${
+              activeTab === 'admin' ? 'bg-slate-900 text-amber-400' : 'bg-slate-900/90 text-amber-300'
+            }`}
+          >
+            <KeyRound className="w-3 h-3" />
+            Admin Portal
           </button>
         </div>
       </div>
