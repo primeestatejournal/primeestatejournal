@@ -60,13 +60,17 @@ export const PublicBlog: React.FC<PublicBlogProps> = ({ onOpenAdmin }) => {
               />
             </div>
             
-            <button
-              onClick={onOpenAdmin}
-              className="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 transition-all shrink-0"
+            <a
+              href="/admin"
+              onClick={(e) => {
+                e.preventDefault();
+                onOpenAdmin();
+              }}
+              className="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 transition-all shrink-0 cursor-pointer"
             >
               <FileText className="w-4 h-4" />
-              <span>Admin Author Desk</span>
-            </button>
+              <span>Admin Author Desk (/admin)</span>
+            </a>
           </div>
         </div>
       </div>
@@ -142,12 +146,16 @@ export const PublicBlog: React.FC<PublicBlogProps> = ({ onOpenAdmin }) => {
           <p className="text-xs text-slate-500 max-w-md mx-auto">
             {searchQuery ? 'No articles matched your search query.' : 'Our editorial team is drafting upcoming guides. Check back shortly or log in to the admin panel to publish the first article.'}
           </p>
-          <button
-            onClick={onOpenAdmin}
-            className="bg-[#155EEF] text-white text-xs font-bold px-4 py-2 rounded-xl"
+          <a
+            href="/admin"
+            onClick={(e) => {
+              e.preventDefault();
+              onOpenAdmin();
+            }}
+            className="inline-block bg-[#155EEF] text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer"
           >
-            Publish Article via Admin Dashboard
-          </button>
+            Publish Article via Admin Dashboard (/admin)
+          </a>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

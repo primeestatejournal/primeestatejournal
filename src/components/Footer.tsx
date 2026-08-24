@@ -98,10 +98,17 @@ export const Footer: React.FC<FooterProps> = ({
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveTab('admin')} className="hover:text-slate-900 transition-colors font-bold text-slate-900 flex items-center gap-1">
-                  <span>Executive Admin Dashboard</span>
+                <a 
+                  href="/admin" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveTab('admin');
+                  }} 
+                  className="hover:text-slate-900 transition-colors font-bold text-slate-900 flex items-center gap-1"
+                >
+                  <span>Executive Admin Dashboard (/admin)</span>
                   <ArrowUpRight className="w-3 h-3 text-amber-600" />
-                </button>
+                </a>
               </li>
             </ul>
           </div>

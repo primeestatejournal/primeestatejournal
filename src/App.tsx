@@ -18,7 +18,9 @@ import { AIConsultantDrawer } from './components/AIConsultantDrawer';
 import { Footer } from './components/Footer';
 import { PublicBlog } from './components/PublicBlog';
 import { AdminDashboard } from './components/admin/AdminDashboard';
+import { ProtectedRoute } from './components/admin/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
+import { getTabFromUrl, syncUrlWithTab } from './lib/router';
 
 import { Property, CurrencyCode, FilterState, NavigationTab } from './types';
 import { SAMPLE_PROPERTIES } from './data/properties';
@@ -26,10 +28,32 @@ import { fetchSupabaseProperties } from './lib/supabase';
 import { ShieldCheck, Sparkles, Building2, SlidersHorizontal, ArrowRight, Lock, CheckCircle2 } from 'lucide-react';
 
 function AppContent() {
-  const [activeTab, setActiveTab] = useState<NavigationTab>('marketplace');
+  const [activeTab, setActiveTabState] = useState<NavigationTab>(() => getTabFromUrl());
   const [currency, setCurrency] = useState<CurrencyCode>('NGN');
   const [propertiesList, setPropertiesList] = useState<Property[]>([]);
   const [isLoadingProps, setIsLoadingProps] = useState(false);
+
+  const setActiveTab = (newTab: NavigationTab) => {
+    setActiveTabState(newTab);
+    syncUrlWithTab(newTab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Listen for browser Back/Forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      const currentTab = getTabFromUrl();
+      setActiveTabState(currentTab);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Ensure current URL reflects the initial tab
+  useEffect(() => {
+    syncUrlWithTab(activeTab, true);
+  }, []);
   
   const [savedPropertyIds, setSavedPropertyIds] = useState<string[]>(() => {
     try {
@@ -163,12 +187,19 @@ function AppContent() {
 
   if (activeTab === 'admin') {
     return (
-      <AdminDashboard
+      <ProtectedRoute
         onReturnToSite={() => {
           setActiveTab('marketplace');
           loadProperties();
         }}
-      />
+      >
+        <AdminDashboard
+          onReturnToSite={() => {
+            setActiveTab('marketplace');
+            loadProperties();
+          }}
+        />
+      </ProtectedRoute>
     );
   }
 
