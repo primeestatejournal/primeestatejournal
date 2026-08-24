@@ -18,7 +18,6 @@ import { AIConsultantDrawer } from './components/AIConsultantDrawer';
 import { Footer } from './components/Footer';
 import { PublicBlog } from './components/PublicBlog';
 import { AdminDashboard } from './components/admin/AdminDashboard';
-import { ProtectedRoute } from './components/admin/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 import { getTabFromUrl, syncUrlWithTab } from './lib/router';
 
@@ -187,19 +186,12 @@ function AppContent() {
 
   if (activeTab === 'admin') {
     return (
-      <ProtectedRoute
+      <AdminDashboard
         onReturnToSite={() => {
           setActiveTab('marketplace');
           loadProperties();
         }}
-      >
-        <AdminDashboard
-          onReturnToSite={() => {
-            setActiveTab('marketplace');
-            loadProperties();
-          }}
-        />
-      </ProtectedRoute>
+      />
     );
   }
 
