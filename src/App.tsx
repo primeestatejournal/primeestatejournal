@@ -18,8 +18,10 @@ import { AIConsultantDrawer } from './components/AIConsultantDrawer';
 import { Footer } from './components/Footer';
 import { PublicBlog } from './components/PublicBlog';
 import { AdminDashboard } from './components/admin/AdminDashboard';
+import { AdminRouteGuard } from './components/admin/AdminRouteGuard';
 import { AuthProvider } from './context/AuthContext';
 import { getTabFromUrl, syncUrlWithTab } from './lib/router';
+import { HashRouter, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 
 import { Property, CurrencyCode, FilterState, NavigationTab } from './types';
 import { SAMPLE_PROPERTIES } from './data/properties';
@@ -186,12 +188,19 @@ function AppContent() {
 
   if (activeTab === 'admin') {
     return (
-      <AdminDashboard
+      <AdminRouteGuard
         onReturnToSite={() => {
           setActiveTab('marketplace');
           loadProperties();
         }}
-      />
+      >
+        <AdminDashboard
+          onReturnToSite={() => {
+            setActiveTab('marketplace');
+            loadProperties();
+          }}
+        />
+      </AdminRouteGuard>
     );
   }
 
@@ -488,18 +497,54 @@ function AppContent() {
   );
 }
 
+function AdminPageWrapper() {
+  const navigate = useNavigate();
+  return (
+    <AdminRouteGuard onReturnToSite={() => navigate('/')}>
+      <AdminDashboard
+        onReturnToSite={() => navigate('/')}
+      />
+    </AdminRouteGuard>
+  );
+}
+
+function RoutedApp() {
+  const navigate = useNavigate();
+
+  // Seamless transition: if user loads with pathname /admin without hash, map cleanly to #/admin
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const pathname = window.location.pathname.toLowerCase().replace(/\/$/, '');
+      if ((pathname === '/admin' || pathname.startsWith('/admin/')) && !window.location.hash.includes('admin')) {
+        navigate('/admin', { replace: true });
+      }
+    }
+  }, [navigate]);
+
+  return (
+    <Routes>
+      <Route path="/admin" element={<AdminPageWrapper />} />
+      <Route path="/admin/*" element={<AdminPageWrapper />} />
+      <Route path="/" element={<AppContent />} />
+      <Route path="*" element={<AppContent />} />
+    </Routes>
+  );
+}
+
+export function AppWithRouting() {
+  return (
+    <HashRouter>
+      <RoutedApp />
+    </HashRouter>
+  );
+}
+
 export function App() {
   return (
     <AuthProvider>
       <AppWithRouting />
     </AuthProvider>
   );
-}
-
-function AppWithRouting() {
-  const [isAdminRoute, setIsAdminRoute] = useState(false);
-
-  return <AppContent />;
 }
 
 export default App;

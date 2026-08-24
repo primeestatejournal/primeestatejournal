@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AdminDashboardView } from '../../types';
-import { ProtectedRoute } from './ProtectedRoute';
+import { AdminRouteGuard } from './AdminRouteGuard';
 import { AdminLayout } from './AdminLayout';
 import { AdminOverview } from './AdminOverview';
 import { AdminProperties } from './AdminProperties';
@@ -20,7 +20,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onReturnToSite }
   const [openBlogEditor, setOpenBlogEditor] = useState(false);
 
   return (
-    <ProtectedRoute onReturnToSite={onReturnToSite}>
+    <AdminRouteGuard onReturnToSite={onReturnToSite}>
       <AdminLayout
         currentView={currentView}
         onViewChange={(view) => {
@@ -62,7 +62,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onReturnToSite }
 
         {currentView === 'database' && <AdminDatabaseDesk />}
       </AdminLayout>
-    </ProtectedRoute>
+    </AdminRouteGuard>
   );
 };
 

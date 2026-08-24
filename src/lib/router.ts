@@ -53,12 +53,15 @@ export function getTabFromUrl(): NavigationTab {
     return PATH_TO_TAB[pathname];
   }
 
-  // 3. Hash match fallback (#admin, #/admin, #blog)
-  if (hash === 'admin' || hash === 'admin/') {
+  // 3. Hash match fallback (#admin, #/admin, #/admin/dashboard, #blog)
+  if (hash === 'admin' || hash === 'admin/' || hash === '/admin' || hash.startsWith('admin') || hash.startsWith('/admin')) {
     return 'admin';
   }
   if (PATH_TO_TAB[`/${hash}`]) {
     return PATH_TO_TAB[`/${hash}`];
+  }
+  if (PATH_TO_TAB[hash]) {
+    return PATH_TO_TAB[hash];
   }
 
   // 4. Query param fallback (?tab=admin or ?view=admin)
