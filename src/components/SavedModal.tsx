@@ -1,6 +1,6 @@
 import React from 'react';
 import { Property } from '../types';
-import { X, Bookmark, Trash2, ArrowRight, ShieldCheck } from 'lucide-react';
+import { X, Bookmark, Trash2, ArrowRight, ShieldCheck, Building2 } from 'lucide-react';
 
 interface SavedModalProps {
   savedProperties: Property[];
@@ -56,12 +56,19 @@ export const SavedModal: React.FC<SavedModalProps> = ({
                   className="bg-slate-50 p-3 sm:p-4 rounded-xl border border-slate-200 hover:border-slate-300 transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
                 >
                   <div className="flex items-center gap-3">
-                    <img 
-                      src={p.images[0]} 
-                      alt={p.title} 
-                      referrerPolicy="no-referrer" 
-                      className="w-16 h-16 rounded-lg object-cover shrink-0 border border-slate-200"
-                    />
+                    {p.images && p.images.length > 0 ? (
+                      <img 
+                        src={p.images[0]} 
+                        alt={p.title} 
+                        referrerPolicy="no-referrer" 
+                        className="w-16 h-16 rounded-lg object-cover shrink-0 border border-slate-200"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-slate-900 to-slate-950 flex flex-col items-center justify-center text-[#D4A72C] shrink-0 border border-slate-800 p-1">
+                        <Building2 className="w-5 h-5 text-blue-400 mb-0.5" />
+                        <span className="text-[8px] font-bold text-slate-300">DOSSIER</span>
+                      </div>
+                    )}
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] font-bold uppercase text-slate-500">{p.typeLabel}</span>

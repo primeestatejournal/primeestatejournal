@@ -58,11 +58,11 @@ export const AdminProperties: React.FC<AdminPropertiesProps> = ({
     price_naira: '',
     agent_whatsapp: '+2348030000000',
     agent_call_number: '+2348020000000',
-    featured_image_url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80',
-    gallery_image_url_1: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
-    gallery_image_url_2: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
-    gallery_image_url_3: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=800&q=80',
-    gallery_image_url_4: 'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?auto=format&fit=crop&w=800&q=80',
+    featured_image_url: '',
+    gallery_image_url_1: '',
+    gallery_image_url_2: '',
+    gallery_image_url_3: '',
+    gallery_image_url_4: '',
   });
 
   const loadProperties = async () => {
@@ -95,11 +95,11 @@ export const AdminProperties: React.FC<AdminPropertiesProps> = ({
       price_naira: '',
       agent_whatsapp: '+2348031234567',
       agent_call_number: '+2348021234567',
-      featured_image_url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80',
-      gallery_image_url_1: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
-      gallery_image_url_2: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
-      gallery_image_url_3: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=800&q=80',
-      gallery_image_url_4: 'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?auto=format&fit=crop&w=800&q=80',
+      featured_image_url: '',
+      gallery_image_url_1: '',
+      gallery_image_url_2: '',
+      gallery_image_url_3: '',
+      gallery_image_url_4: '',
     });
     setErrorMessage(null);
     setIsModalOpen(true);
@@ -317,12 +317,18 @@ export const AdminProperties: React.FC<AdminPropertiesProps> = ({
                       {/* Title & Featured Image */}
                       <td className="py-4 px-4 sm:px-6">
                         <div className="flex items-center gap-3">
-                          <img
-                            src={prop.featured_image_url || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=300&q=80'}
-                            alt={prop.title}
-                            referrerPolicy="no-referrer"
-                            className="w-14 h-14 rounded-xl object-cover border border-slate-800 shrink-0 shadow-sm"
-                          />
+                          {prop.featured_image_url ? (
+                            <img
+                              src={prop.featured_image_url}
+                              alt={prop.title}
+                              referrerPolicy="no-referrer"
+                              className="w-14 h-14 rounded-xl object-cover border border-slate-800 shrink-0 shadow-sm"
+                            />
+                          ) : (
+                            <div className="w-14 h-14 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0 text-blue-400">
+                              <Building2 className="w-6 h-6" />
+                            </div>
+                          )}
                           <div className="min-w-0 max-w-xs sm:max-w-sm">
                             <p className="font-bold text-white text-xs truncate group-hover:text-amber-400 transition-colors">
                               {prop.title}
@@ -557,10 +563,9 @@ export const AdminProperties: React.FC<AdminPropertiesProps> = ({
                 <div className="flex gap-3 items-center">
                   <input
                     type="url"
-                    required
                     value={formData.featured_image_url}
                     onChange={(e) => setFormData({ ...formData, featured_image_url: e.target.value })}
-                    placeholder="https://images.unsplash.com/..."
+                    placeholder="https://example.com/property-photo.jpg (optional)"
                     className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-[#155EEF] outline-none"
                   />
                   {formData.featured_image_url && (

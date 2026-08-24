@@ -45,11 +45,18 @@ export const CompareModal: React.FC<CompareModalProps> = ({
                 <th className="p-3 w-40 text-slate-400 uppercase font-bold text-[10px] tracking-wider">Attribute</th>
                 {properties.map((p) => (
                   <th key={p.id} className="p-3 w-64 align-top">
-                    <div className="relative group rounded-xl overflow-hidden bg-slate-100 mb-2 aspect-[16/10]">
-                      <img src={p.images[0]} alt={p.title} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
+                    <div className="relative group rounded-xl overflow-hidden bg-gradient-to-br from-slate-900 via-[#0B1F3A] to-slate-950 mb-2 aspect-[16/10] p-3 flex flex-col justify-between border border-slate-800">
+                      {p.images && p.images.length > 0 ? (
+                        <img src={p.images[0]} alt={p.title} referrerPolicy="no-referrer" className="absolute inset-0 w-full h-full object-cover" />
+                      ) : (
+                        <div className="relative z-10 flex flex-col justify-between h-full">
+                          <span className="text-[10px] font-bold text-[#D4A72C] uppercase">{p.typeLabel}</span>
+                          <span className="text-[10px] text-slate-300 font-mono">{p.titleNumber}</span>
+                        </div>
+                      )}
                       <button
                         onClick={() => onRemoveFromCompare(p.id)}
-                        className="absolute top-2 right-2 p-1.5 rounded-full bg-slate-900/80 text-white hover:bg-red-600 transition-colors"
+                        className="absolute top-2 right-2 p-1.5 rounded-full bg-slate-900/80 text-white hover:bg-red-600 transition-colors z-20"
                         title="Remove from comparison"
                       >
                         <Trash2 className="w-3.5 h-3.5" />

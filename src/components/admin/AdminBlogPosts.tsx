@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   FileText, 
+  BookOpen,
   Plus, 
   Search, 
   Edit, 
@@ -60,7 +61,7 @@ export const AdminBlogPosts: React.FC<AdminBlogPostsProps> = ({
   
   // Form State
   const [postTitle, setPostTitle] = useState('');
-  const [featuredImageUrl, setFeaturedImageUrl] = useState('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80');
+  const [featuredImageUrl, setFeaturedImageUrl] = useState('');
   const [htmlContent, setHtmlContent] = useState('');
   
   const [isSaving, setIsSaving] = useState(false);
@@ -108,7 +109,7 @@ export const AdminBlogPosts: React.FC<AdminBlogPostsProps> = ({
   const handleOpenCreate = () => {
     setEditingPost(null);
     setPostTitle('');
-    setFeaturedImageUrl('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80');
+    setFeaturedImageUrl('');
     setHtmlContent(`<h2>Prime Nigerian Real Estate Market Insights</h2>
 <p>Investing in Lagos and Abuja high-yield corridors requires diligent verification of land titles, developer compliance, and registered Governor's Consent.</p>
 <h3>Key Investment Due Diligence Points:</h3>
@@ -157,7 +158,7 @@ export const AdminBlogPosts: React.FC<AdminBlogPostsProps> = ({
   };
 
   const handleInsertImage = () => {
-    const url = prompt('Enter Image URL to embed into the article:', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80');
+    const url = prompt('Enter Image URL to embed into the article:');
     if (url) {
       executeCommand('insertImage', url);
     }
@@ -343,12 +344,18 @@ export const AdminBlogPosts: React.FC<AdminBlogPostsProps> = ({
                         {/* Title & Featured Image */}
                         <td className="py-4 px-4 sm:px-6">
                           <div className="flex items-center gap-3">
-                            <img
-                              src={post.featured_image_url || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=300&q=80'}
-                              alt={post.title}
-                              referrerPolicy="no-referrer"
-                              className="w-14 h-14 rounded-xl object-cover border border-slate-800 shrink-0 shadow-sm"
-                            />
+                            {post.featured_image_url ? (
+                              <img
+                                src={post.featured_image_url}
+                                alt={post.title}
+                                referrerPolicy="no-referrer"
+                                className="w-14 h-14 rounded-xl object-cover border border-slate-800 shrink-0 shadow-sm"
+                              />
+                            ) : (
+                              <div className="w-14 h-14 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0 text-amber-400">
+                                <BookOpen className="w-6 h-6" />
+                              </div>
+                            )}
                             <div className="min-w-0 max-w-sm sm:max-w-md">
                               <p className="font-bold text-white text-xs truncate group-hover:text-amber-400 transition-colors">
                                 {post.title}
@@ -530,7 +537,7 @@ export const AdminBlogPosts: React.FC<AdminBlogPostsProps> = ({
                     type="url"
                     value={featuredImageUrl}
                     onChange={(e) => setFeaturedImageUrl(e.target.value)}
-                    placeholder="https://images.unsplash.com/..."
+                    placeholder="https://example.com/article-header.jpg (optional)"
                     className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-amber-400 outline-none"
                   />
                   {featuredImageUrl && (

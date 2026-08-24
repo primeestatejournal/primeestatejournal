@@ -145,47 +145,77 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
             </div>
           </div>
 
-          {/* Gallery View */}
+          {/* Gallery / Title View */}
           <div className="space-y-3">
-            <div className="relative aspect-[16/9] sm:aspect-[21/9] bg-slate-950 rounded-xl overflow-hidden shadow-inner">
-              <img
-                src={property.images[activeImgIndex] || property.images[0]}
-                alt={property.title}
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-cover"
-              />
-              {property.images.length > 1 && (
-                <div className="absolute inset-y-0 left-3 right-3 flex items-center justify-between pointer-events-none">
-                  <button
-                    onClick={() => setActiveImgIndex((prev) => (prev - 1 + property.images.length) % property.images.length)}
-                    className="p-2 rounded-full bg-slate-900/80 text-white hover:bg-slate-900 pointer-events-auto transition-colors"
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={() => setActiveImgIndex((prev) => (prev + 1) % property.images.length)}
-                    className="p-2 rounded-full bg-slate-900/80 text-white hover:bg-slate-900 pointer-events-auto transition-colors"
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
+            {property.images && property.images.length > 0 ? (
+              <>
+                <div className="relative aspect-[16/9] sm:aspect-[21/9] bg-slate-950 rounded-xl overflow-hidden shadow-inner">
+                  <img
+                    src={property.images[activeImgIndex] || property.images[0]}
+                    alt={property.title}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover"
+                  />
+                  {property.images.length > 1 && (
+                    <div className="absolute inset-y-0 left-3 right-3 flex items-center justify-between pointer-events-none">
+                      <button
+                        onClick={() => setActiveImgIndex((prev) => (prev - 1 + property.images.length) % property.images.length)}
+                        className="p-2 rounded-full bg-slate-900/80 text-white hover:bg-slate-900 pointer-events-auto transition-colors"
+                      >
+                        <ChevronLeft className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => setActiveImgIndex((prev) => (prev + 1) % property.images.length)}
+                        className="p-2 rounded-full bg-slate-900/80 text-white hover:bg-slate-900 pointer-events-auto transition-colors"
+                      >
+                        <ChevronRight className="w-5 h-5" />
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            {/* Thumbnail Row */}
-            {property.images.length > 1 && (
-              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-                {property.images.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveImgIndex(idx)}
-                    className={`relative w-20 h-14 rounded-lg overflow-hidden shrink-0 border-2 transition-all ${
-                      activeImgIndex === idx ? 'border-slate-900 scale-105 shadow-md' : 'border-transparent opacity-60 hover:opacity-100'
-                    }`}
-                  >
-                    <img src={img} alt="Thumbnail" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
-                  </button>
-                ))}
+                {/* Thumbnail Row */}
+                {property.images.length > 1 && (
+                  <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                    {property.images.map((img, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setActiveImgIndex(idx)}
+                        className={`relative w-20 h-14 rounded-lg overflow-hidden shrink-0 border-2 transition-all ${
+                          activeImgIndex === idx ? 'border-slate-900 scale-105 shadow-md' : 'border-transparent opacity-60 hover:opacity-100'
+                        }`}
+                      >
+                        <img src={img} alt="Thumbnail" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="relative aspect-[16/9] sm:aspect-[21/9] bg-gradient-to-br from-slate-950 via-[#0B1F3A] to-slate-900 rounded-xl overflow-hidden shadow-inner p-6 sm:p-8 flex flex-col justify-between border border-slate-800">
+                <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+                
+                <div className="relative z-10 flex items-center justify-between">
+                  <span className="bg-[#D4A72C] text-slate-950 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                    Verified Title Asset
+                  </span>
+                  <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                    {property.verificationStatus}
+                  </span>
+                </div>
+
+                <div className="relative z-10 my-auto py-2">
+                  <p className="text-xs text-slate-400 font-medium mb-1">{property.location}</p>
+                  <h3 className="text-lg sm:text-2xl font-bold text-white">{property.title}</h3>
+                </div>
+
+                <div className="relative z-10 flex items-center justify-between text-xs text-slate-300 pt-2 border-t border-white/10">
+                  <span className="font-mono text-amber-300 font-bold">{property.titleNumber}</span>
+                  <span className="bg-[#155EEF] text-white px-2.5 py-0.5 rounded font-semibold">
+                    Risk Score: {property.dossier.legalRiskScore}/100
+                  </span>
+                </div>
               </div>
             )}
           </div>

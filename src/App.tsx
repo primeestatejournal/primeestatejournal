@@ -83,10 +83,11 @@ function AppContent() {
       if (dbProps && dbProps.length > 0) {
         setPropertiesList(dbProps);
       } else {
-        setPropertiesList([]);
+        setPropertiesList(SAMPLE_PROPERTIES);
       }
     } catch (e) {
       console.error(e);
+      setPropertiesList(SAMPLE_PROPERTIES);
     } finally {
       setIsLoadingProps(false);
     }

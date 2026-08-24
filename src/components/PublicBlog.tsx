@@ -144,16 +144,32 @@ export const PublicBlog: React.FC<PublicBlogProps> = () => {
               className="bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-xl hover:border-blue-300 transition-all cursor-pointer flex flex-col justify-between group"
             >
               <div>
-                <div className="relative overflow-hidden aspect-[16/10]">
-                  <img
-                    src={post.featured_image_url || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80'}
-                    alt={post.title}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md text-amber-400 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-slate-800">
-                    Market Intelligence
-                  </div>
+                <div className="relative overflow-hidden aspect-[16/10] bg-gradient-to-br from-slate-900 via-[#0B1F3A] to-slate-950 p-6 flex flex-col justify-between">
+                  <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
+                  {post.featured_image_url ? (
+                    <img
+                      src={post.featured_image_url}
+                      alt={post.title}
+                      referrerPolicy="no-referrer"
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="relative z-10 flex flex-col justify-between h-full">
+                      <div className="flex items-center justify-between">
+                        <span className="bg-[#D4A72C] text-slate-950 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                          Market Intelligence
+                        </span>
+                        <BookOpen className="w-4 h-4 text-blue-300" />
+                      </div>
+                      <div className="my-auto py-2">
+                        <p className="text-[11px] font-bold text-slate-300 uppercase tracking-widest">LEGAL & INVESTMENT INSIGHT</p>
+                      </div>
+                      <div className="text-[10px] font-medium text-slate-400 border-t border-white/10 pt-2 flex items-center justify-between">
+                        <span>Prime Editorial Desk</span>
+                        <span className="text-[#155EEF] font-bold">Read Analysis →</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="p-6">

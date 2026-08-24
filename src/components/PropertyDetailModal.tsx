@@ -51,33 +51,76 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
           </button>
         </div>
 
-        {/* Gallery Section */}
+        {/* Gallery / Title Dossier Header Section */}
         <div className="p-6 space-y-6">
           <div className="space-y-3">
-            <div className="relative h-64 sm:h-96 rounded-2xl overflow-hidden bg-slate-900 shadow-md">
-              <img
-                src={property.images[activeImageIndex]}
-                alt={property.title}
-                className="w-full h-full object-cover transition-all duration-300"
-              />
-              <div className="absolute bottom-3 right-3 bg-[#0B1F3A]/80 backdrop-blur-md text-white px-3 py-1 rounded-lg text-xs font-semibold border border-white/20">
-                Image {activeImageIndex + 1} of {property.images.length}
-              </div>
-            </div>
+            {property.images && property.images.length > 0 ? (
+              <>
+                <div className="relative h-64 sm:h-96 rounded-2xl overflow-hidden bg-slate-900 shadow-md">
+                  <img
+                    src={property.images[activeImageIndex]}
+                    alt={property.title}
+                    className="w-full h-full object-cover transition-all duration-300"
+                  />
+                  <div className="absolute bottom-3 right-3 bg-[#0B1F3A]/80 backdrop-blur-md text-white px-3 py-1 rounded-lg text-xs font-semibold border border-white/20">
+                    Image {activeImageIndex + 1} of {property.images.length}
+                  </div>
+                </div>
 
-            {property.images.length > 1 && (
-              <div className="flex gap-3 overflow-x-auto pb-1">
-                {property.images.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveImageIndex(idx)}
-                    className={`w-20 h-16 rounded-xl overflow-hidden border-2 transition-all shrink-0 ${
-                      activeImageIndex === idx ? 'border-[#155EEF] scale-105 shadow-sm' : 'border-transparent opacity-70 hover:opacity-100'
-                    }`}
-                  >
-                    <img src={img} alt="Thumbnail" className="w-full h-full object-cover" />
-                  </button>
-                ))}
+                {property.images.length > 1 && (
+                  <div className="flex gap-3 overflow-x-auto pb-1">
+                    {property.images.map((img, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setActiveImageIndex(idx)}
+                        className={`w-20 h-16 rounded-xl overflow-hidden border-2 transition-all shrink-0 ${
+                          activeImageIndex === idx ? 'border-[#155EEF] scale-105 shadow-sm' : 'border-transparent opacity-70 hover:opacity-100'
+                        }`}
+                      >
+                        <img src={img} alt="Thumbnail" className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="relative h-48 sm:h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-slate-950 via-[#0B1F3A] to-slate-900 border border-slate-800 p-6 sm:p-8 flex flex-col justify-between shadow-lg">
+                <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:28px_28px] pointer-events-none" />
+                
+                <div className="relative z-10 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="bg-[#D4A72C] text-slate-950 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                      Official Title Dossier
+                    </span>
+                    <span className="bg-blue-500/20 text-blue-300 border border-blue-400/30 text-[10px] font-bold px-2.5 py-1 rounded-full">
+                      {property.zoning}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-1 text-emerald-400 text-xs font-bold bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full">
+                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                    <span>{property.verificationStatus}</span>
+                  </div>
+                </div>
+
+                <div className="relative z-10 my-auto py-3">
+                  <p className="text-xs text-slate-400 font-medium flex items-center gap-1.5 mb-1">
+                    <MapPin className="w-4 h-4 text-[#155EEF]" />
+                    <span>{property.location}</span>
+                  </p>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white font-sans">{property.title}</h3>
+                </div>
+
+                <div className="relative z-10 flex items-center justify-between pt-3 border-t border-white/10 text-xs text-slate-300">
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-amber-300 font-bold">{property.titleNumber}</span>
+                    <span>•</span>
+                    <span>{property.sizeDisplay}</span>
+                  </div>
+                  <span className="bg-[#155EEF] text-white font-bold px-3 py-1 rounded-lg text-xs">
+                    Legal Score: {property.dossier.legalRiskScore}/100
+                  </span>
+                </div>
               </div>
             )}
           </div>

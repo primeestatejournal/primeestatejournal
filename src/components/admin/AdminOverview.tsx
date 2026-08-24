@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Building2, 
+  BookOpen,
   FileText, 
   Users, 
   ShieldCheck, 
@@ -309,12 +310,18 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
                 {properties.slice(0, 4).map((prop) => (
                   <div key={prop.id} className="py-3.5 flex items-center justify-between gap-4 group">
                     <div className="flex items-center gap-3 min-w-0">
-                      <img
-                        src={prop.featured_image_url || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=300&q=80'}
-                        alt={prop.title}
-                        referrerPolicy="no-referrer"
-                        className="w-12 h-12 rounded-xl object-cover border border-slate-800 shrink-0"
-                      />
+                      {prop.featured_image_url ? (
+                        <img
+                          src={prop.featured_image_url}
+                          alt={prop.title}
+                          referrerPolicy="no-referrer"
+                          className="w-12 h-12 rounded-xl object-cover border border-slate-800 shrink-0"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0 text-blue-400">
+                          <Building2 className="w-5 h-5" />
+                        </div>
+                      )}
                       <div className="min-w-0">
                         <p className="text-xs font-bold text-white truncate group-hover:text-amber-400 transition-colors">
                           {prop.title}
@@ -387,12 +394,18 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
                 {blogPosts.slice(0, 4).map((post) => (
                   <div key={post.id} className="py-3.5 flex items-center justify-between gap-4 group">
                     <div className="flex items-center gap-3 min-w-0">
-                      <img
-                        src={post.featured_image_url || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=300&q=80'}
-                        alt={post.title}
-                        referrerPolicy="no-referrer"
-                        className="w-12 h-12 rounded-xl object-cover border border-slate-800 shrink-0"
-                      />
+                      {post.featured_image_url ? (
+                        <img
+                          src={post.featured_image_url}
+                          alt={post.title}
+                          referrerPolicy="no-referrer"
+                          className="w-12 h-12 rounded-xl object-cover border border-slate-800 shrink-0"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0 text-amber-400">
+                          <BookOpen className="w-5 h-5" />
+                        </div>
+                      )}
                       <div className="min-w-0">
                         <p className="text-xs font-bold text-white truncate group-hover:text-amber-400 transition-colors">
                           {post.title}

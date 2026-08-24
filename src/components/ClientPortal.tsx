@@ -175,7 +175,17 @@ CREATE TABLE IF NOT EXISTS public.audit_requests (
               {savedProperties.map((prop) => (
                 <div key={prop.id} className="border border-slate-200 rounded-2xl p-4 bg-slate-50 flex flex-col justify-between space-y-4">
                   <div>
-                    <img src={prop.images[0]} alt={prop.title} className="w-full h-36 object-cover rounded-xl mb-3" />
+                    {prop.images && prop.images.length > 0 ? (
+                      <img src={prop.images[0]} alt={prop.title} className="w-full h-36 object-cover rounded-xl mb-3" />
+                    ) : (
+                      <div className="w-full h-28 rounded-xl bg-gradient-to-br from-slate-900 via-[#0B1F3A] to-slate-950 flex flex-col justify-between p-3.5 mb-3 border border-slate-800">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-[#D4A72C] uppercase">{prop.typeLabel}</span>
+                          <span className="text-[10px] text-emerald-400 font-bold">100% Verified</span>
+                        </div>
+                        <p className="text-xs font-mono text-slate-300 font-bold">{prop.titleNumber}</p>
+                      </div>
+                    )}
                     <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">
                       {prop.verificationStatus}
                     </span>
