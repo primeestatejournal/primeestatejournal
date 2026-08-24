@@ -23,7 +23,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
   const displayPrice = formatPriceByCurrency(property.priceNaira, currency);
 
   return (
-    <div className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full">
+    <div className="group bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col h-full hover:border-slate-300">
       
       {/* Property Image Header with Badges */}
       <div className="relative h-52 sm:h-56 overflow-hidden bg-slate-100 cursor-pointer" onClick={() => onSelectProperty(property)}>
@@ -38,7 +38,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none">
           
           {/* Verification Badge */}
-          <div className="bg-slate-900/90 backdrop-blur-md text-emerald-400 border border-emerald-500/30 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1.5 pointer-events-auto">
+          <div className="bg-slate-950/85 backdrop-blur-md text-emerald-400 border border-emerald-500/30 text-[10.5px] font-bold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1.5 pointer-events-auto">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
             <span>{property.verificationStatus}</span>
           </div>
@@ -49,10 +49,10 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
               e.stopPropagation();
               onToggleSave(property.id);
             }}
-            className={`pointer-events-auto p-2 rounded-full backdrop-blur-md border transition-all ${
+            className={`pointer-events-auto p-2 rounded-full backdrop-blur-md border transition-all cursor-pointer ${
               isSaved
-                ? 'bg-amber-400 text-slate-900 border-amber-400'
-                : 'bg-slate-900/70 text-white border-white/20 hover:bg-slate-900'
+                ? 'bg-amber-400 text-slate-950 border-amber-300 shadow-sm'
+                : 'bg-slate-950/70 text-white border-white/20 hover:bg-slate-900'
             }`}
             title={isSaved ? 'Remove from Saved' : 'Save Property'}
           >
@@ -62,13 +62,13 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
 
         {/* Bottom Image Overlay Badges */}
         <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none">
-          <span className="bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-semibold px-2.5 py-0.5 rounded-md border border-white/10">
+          <span className="bg-slate-950/80 backdrop-blur-md text-white text-[10px] font-semibold px-2.5 py-0.5 rounded-md border border-white/10">
             {property.sizeDisplay}
           </span>
 
-          <span className="bg-blue-600/90 backdrop-blur-md text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
+          <span className="bg-[#155EEF]/90 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-0.5 rounded-md flex items-center gap-1 border border-blue-400/30 shadow-xs">
             <Scale className="w-3 h-3 text-amber-300" />
-            Score: {property.dossier.legalRiskScore}/100
+            <span>Risk Score: {property.dossier.legalRiskScore}/100</span>
           </span>
         </div>
       </div>
@@ -78,11 +78,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         <div>
           {/* Title Document Tag & Type */}
           <div className="flex items-center justify-between gap-2 mb-2">
-            <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-700 text-[11px] font-semibold px-2.5 py-0.5 rounded-md border border-slate-200">
+            <span className="inline-flex items-center gap-1 bg-slate-100/90 text-slate-700 text-[11px] font-semibold px-2.5 py-0.5 rounded-lg border border-slate-200">
               <FileText className="w-3 h-3 text-[#155EEF]" />
-              {property.titleType}
+              <span className="truncate max-w-[170px]">{property.titleType}</span>
             </span>
-            <span className="text-[11px] text-slate-500 font-medium">
+            <span className="text-[11px] text-slate-500 font-semibold tracking-tight">
               {property.typeLabel}
             </span>
           </div>
@@ -96,20 +96,20 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
           </h3>
 
           {/* Location */}
-          <p className="text-xs text-slate-500 flex items-center gap-1 mb-3">
-            <MapPin className="w-3.5 h-3.5 text-[#155EEF] shrink-0" />
+          <p className="text-xs text-slate-500 flex items-center gap-1 mb-3 font-medium">
+            <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
             <span className="truncate">{property.location}</span>
           </p>
 
           {/* Key Metrics Grid */}
-          <div className="grid grid-cols-2 gap-2 p-2.5 bg-slate-50 rounded-xl border border-slate-100 mb-4 text-xs">
+          <div className="grid grid-cols-2 gap-2 p-2.5 bg-slate-50/80 rounded-xl border border-slate-100 mb-4 text-xs">
             <div>
-              <p className="text-[10px] text-slate-500 uppercase font-medium">Projected Yield</p>
-              <p className="font-bold text-slate-800">{property.projectedAnnualYield}</p>
+              <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Projected Yield</p>
+              <p className="font-extrabold text-slate-900">{property.projectedAnnualYield}</p>
             </div>
             <div>
-              <p className="text-[10px] text-slate-500 uppercase font-medium">5-Yr Growth</p>
-              <p className="font-bold text-emerald-600">{property.projected5YrAppreciation}</p>
+              <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">5-Yr Growth</p>
+              <p className="font-extrabold text-emerald-600">{property.projected5YrAppreciation}</p>
             </div>
           </div>
 
@@ -120,7 +120,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
               <span className="truncate font-medium">{property.developerName}</span>
             </div>
             {property.developerVerified && (
-              <span className="text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 shrink-0 flex items-center gap-0.5">
+              <span className="text-emerald-800 font-bold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/80 shrink-0 flex items-center gap-1">
                 <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                 Verified Dev
               </span>
@@ -130,15 +130,15 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
 
         {/* Footer Price & Dossier Actions */}
         <div>
-          <div className="flex items-baseline justify-between mb-3">
+          <div className="flex items-baseline justify-between mb-3.5">
             <div>
-              <p className="text-[10px] text-slate-400 uppercase font-medium">Verified Price ({currency})</p>
-              <p className="text-lg font-extrabold text-[#0B1F3A] font-sans tracking-tight">
+              <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Verified Price ({currency})</p>
+              <p className="text-lg font-extrabold text-slate-950 font-sans tracking-tight">
                 {displayPrice}
               </p>
             </div>
             {property.escrowProtected && (
-              <span className="bg-amber-50 text-[#0B1F3A] border border-amber-300 text-[10px] font-semibold px-2 py-0.5 rounded flex items-center gap-1">
+              <span className="bg-amber-50 text-amber-950 border border-amber-200 text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 shadow-2xs">
                 <Lock className="w-3 h-3 text-[#D4A72C]" />
                 Escrow Protected
               </span>
@@ -148,15 +148,15 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
           <div className="grid grid-cols-2 gap-2">
             <button
               onClick={() => onViewDossier(property)}
-              className="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold py-2 rounded-xl border border-slate-700 transition-all flex items-center justify-center gap-1 shadow-sm"
+              className="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer active:scale-98"
             >
               <ShieldCheck className="w-3.5 h-3.5 text-[#D4A72C]" />
-              Legal Dossier
+              <span>Dossier</span>
             </button>
 
             <button
               onClick={() => onSelectProperty(property)}
-              className="w-full bg-[#155EEF] hover:bg-blue-600 text-white text-xs font-bold py-2 rounded-xl transition-all flex items-center justify-center gap-1 shadow-sm"
+              className="w-full bg-[#155EEF] hover:bg-blue-600 text-white text-xs font-bold py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer active:scale-98"
             >
               <span>Inspect</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
