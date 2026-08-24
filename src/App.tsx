@@ -423,7 +423,7 @@ function AppContent() {
 
         {/* Market Intelligence Blog */}
         {activeTab === 'blog' && (
-          <PublicBlog onOpenAdmin={() => setActiveTab('admin')} />
+          <PublicBlog />
         )}
 
         {/* Developer Accreditation Portal */}

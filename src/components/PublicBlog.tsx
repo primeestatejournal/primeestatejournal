@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { DbBlogPost } from '../types';
 import { fetchAdminBlogPosts } from '../lib/supabase';
-import { FileText, Calendar, User, Clock, ArrowRight, Sparkles, Search, ChevronRight, Share2, ArrowLeft, BookOpen, ShieldCheck } from 'lucide-react';
+import { Calendar, User, Sparkles, Search, ChevronRight, ArrowLeft, BookOpen, ShieldCheck } from 'lucide-react';
 
 interface PublicBlogProps {
-  onOpenAdmin: () => void;
+  onOpenAdmin?: () => void;
 }
 
-export const PublicBlog: React.FC<PublicBlogProps> = ({ onOpenAdmin }) => {
+export const PublicBlog: React.FC<PublicBlogProps> = () => {
   const [posts, setPosts] = useState<DbBlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -48,8 +48,8 @@ export const PublicBlog: React.FC<PublicBlogProps> = ({ onOpenAdmin }) => {
             Essential analysis on Lagos Governor's Consent, Abuja AGIS titling, off-plan developer verification, and diaspora capital repatriation strategies.
           </p>
 
-          <div className="mt-6 flex flex-wrap items-center gap-4">
-            <div className="relative flex-1 min-w-[240px]">
+          <div className="mt-6 flex items-center">
+            <div className="relative flex-1 max-w-md">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
@@ -59,18 +59,6 @@ export const PublicBlog: React.FC<PublicBlogProps> = ({ onOpenAdmin }) => {
                 className="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-300 outline-none focus:ring-2 focus:ring-amber-400"
               />
             </div>
-            
-            <a
-              href="/admin"
-              onClick={(e) => {
-                e.preventDefault();
-                onOpenAdmin();
-              }}
-              className="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 transition-all shrink-0 cursor-pointer"
-            >
-              <FileText className="w-4 h-4" />
-              <span>Admin Author Desk (/admin)</span>
-            </a>
           </div>
         </div>
       </div>
@@ -144,18 +132,8 @@ export const PublicBlog: React.FC<PublicBlogProps> = ({ onOpenAdmin }) => {
           <BookOpen className="w-10 h-10 text-slate-400 mx-auto" />
           <h3 className="text-base font-bold text-slate-900">No Articles Found</h3>
           <p className="text-xs text-slate-500 max-w-md mx-auto">
-            {searchQuery ? 'No articles matched your search query.' : 'Our editorial team is drafting upcoming guides. Check back shortly or log in to the admin panel to publish the first article.'}
+            {searchQuery ? 'No articles matched your search query.' : 'Our editorial team is drafting upcoming market intelligence and title guidance reports. Please check back shortly.'}
           </p>
-          <a
-            href="/admin"
-            onClick={(e) => {
-              e.preventDefault();
-              onOpenAdmin();
-            }}
-            className="inline-block bg-[#155EEF] text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer"
-          >
-            Publish Article via Admin Dashboard (/admin)
-          </a>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

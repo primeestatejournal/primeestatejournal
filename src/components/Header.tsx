@@ -167,20 +167,6 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Right Action Tools */}
           <div className="flex items-center gap-2 sm:gap-3">
             
-            {/* Admin Dashboard CTA Button */}
-            <a
-              href="/admin"
-              onClick={(e) => {
-                e.preventDefault();
-                setActiveTab('admin');
-              }}
-              className="bg-slate-900 hover:bg-slate-800 text-amber-300 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
-              title="Access Admin Management Portal at /admin"
-            >
-              <KeyRound className="w-3.5 h-3.5 text-amber-400" />
-              <span className="hidden sm:inline">Admin Portal</span>
-            </a>
-            
             {/* Currency Switcher */}
             <div className="relative group">
               <div className="flex items-center gap-1 bg-slate-100 text-xs font-semibold text-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-200">
@@ -324,19 +310,6 @@ export const Header: React.FC<HeaderProps> = ({
           >
             Help & FAQ
           </button>
-          <a
-            href="/admin"
-            onClick={(e) => {
-              e.preventDefault();
-              setActiveTab('admin');
-            }}
-            className={`px-3 py-1 rounded-full whitespace-nowrap font-bold flex items-center gap-1 ${
-              activeTab === 'admin' ? 'bg-slate-900 text-amber-400' : 'bg-slate-900/90 text-amber-300'
-            }`}
-          >
-            <KeyRound className="w-3 h-3" />
-            Admin Portal
-          </a>
         </div>
       </div>
     </header>
