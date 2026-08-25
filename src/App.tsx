@@ -63,7 +63,8 @@ function AppContent() {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) {
           // Remove old demo property IDs
-          return parsed.filter((id) => typeof id === 'string' && !id.startsWith('nn-prop-'));
+          const demoPrefixes = ['nn-prop-', 'demo-', 'prop-ikoyi', 'prop-lekki', 'prop-maitama', 'prop-epe', 'prop-guzape', 'prop-phc'];
+          return parsed.filter((id) => typeof id === 'string' && !demoPrefixes.some((pfx) => id.startsWith(pfx)));
         }
       }
     } catch (e) {
@@ -83,21 +84,36 @@ function AppContent() {
       if (dbProps && dbProps.length > 0) {
         setPropertiesList(dbProps);
       } else {
-        setPropertiesList(SAMPLE_PROPERTIES);
+        setPropertiesList([]);
       }
     } catch (e) {
       console.error(e);
-      setPropertiesList(SAMPLE_PROPERTIES);
+      setPropertiesList([]);
     } finally {
       setIsLoadingProps(false);
     }
   };
 
   useEffect(() => {
-    // Clear any obsolete demo keys in localStorage
+    // Purge any obsolete demo properties from localStorage
     try {
-      const keysToCheck = ['pej_demo_properties', 'pej_sample_properties', 'prime_estate_demo_properties'];
+      const keysToCheck = [
+        'pej_demo_properties', 
+        'pej_sample_properties', 
+        'prime_estate_demo_properties',
+        'pej_admin_properties'
+      ];
       keysToCheck.forEach((key) => localStorage.removeItem(key));
+
+      // Clean managed properties in localStorage if any demo ones exist
+      const managed = localStorage.getItem('pej_managed_properties');
+      if (managed) {
+        const parsedManaged = JSON.parse(managed);
+        if (Array.isArray(parsedManaged)) {
+          const cleaned = parsedManaged.filter((p: any) => p.id && !p.id.startsWith('mgmt-00') && !p.id.startsWith('demo-') && !p.id.startsWith('prop-ikoyi'));
+          localStorage.setItem('pej_managed_properties', JSON.stringify(cleaned));
+        }
+      }
     } catch (e) {
       console.error(e);
     }
