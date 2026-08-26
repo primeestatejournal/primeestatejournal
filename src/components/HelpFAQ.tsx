@@ -3,7 +3,7 @@ import { HelpCircle, Phone, Mail, MapPin, ChevronDown, MessageSquare, ShieldChec
 
 export const HelpFAQ: React.FC<{ onOpenAIConsultant: () => void }> = ({ onOpenAIConsultant }) => {
   const [openFAQ, setOpenFAQ] = useState<number | null>(0);
-  const [activeDesk, setActiveDesk] = useState<'lagos' | 'abuja' | 'london' | 'houston'>('lagos');
+  const [activeDesk, setActiveDesk] = useState<'lagos' | 'abuja'>('lagos');
   const [contactSubmitted, setContactSubmitted] = useState(false);
   const [contactForm, setContactForm] = useState({
     name: '',
@@ -60,7 +60,7 @@ export const HelpFAQ: React.FC<{ onOpenAIConsultant: () => void }> = ({ onOpenAI
             Frequently Asked Questions & Contact Desks
           </h1>
           <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed font-medium">
-            Find answers to common legal due diligence, title perfection, and escrow questions, or speak directly with our liaison desks in Nigeria, the UK, or the USA.
+            Find answers to common legal due diligence, title perfection, and escrow questions, or speak directly with our liaison desks in Lagos and Abuja.
           </p>
         </div>
 
@@ -212,21 +212,21 @@ export const HelpFAQ: React.FC<{ onOpenAIConsultant: () => void }> = ({ onOpenAI
 
         </div>
 
-        {/* Global Liaison Desk Selector */}
+        {/* Liaison Desk Selector */}
         <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-md">
           <h2 className="text-lg font-bold text-slate-900 font-sans mb-4 flex items-center gap-2">
             <Globe className="w-5 h-5 text-[#155EEF]" />
-            Global Liaison Desks & Office Addresses
+            Liaison Desks & Office Addresses
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
             
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
               <span className="text-[10px] font-bold text-blue-700 uppercase bg-blue-100 px-2 py-0.5 rounded">
                 Lagos HQ
               </span>
               <p className="font-bold text-slate-900 text-sm">Freedom Way, Lekki Phase 1</p>
-              <p className="text-xs text-slate-600 font-medium">+234 1 800 9000</p>
+              <p className="text-xs text-slate-700 font-semibold">09039215553</p>
               <p className="text-[11px] text-slate-500">lagos@primeestatejournal.ng</p>
             </div>
 
@@ -235,26 +235,8 @@ export const HelpFAQ: React.FC<{ onOpenAIConsultant: () => void }> = ({ onOpenAI
                 Abuja Bureau
               </span>
               <p className="font-bold text-slate-900 text-sm">Maitama District, FCT</p>
-              <p className="text-xs text-slate-600 font-medium">+234 9 400 1200</p>
+              <p className="text-xs text-slate-700 font-semibold">09033142485</p>
               <p className="text-[11px] text-slate-500">abuja@primeestatejournal.ng</p>
-            </div>
-
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
-              <span className="text-[10px] font-bold text-purple-700 uppercase bg-purple-100 px-2 py-0.5 rounded">
-                London Liaison Desk
-              </span>
-              <p className="font-bold text-slate-900 text-sm">Canary Wharf, London E14</p>
-              <p className="text-xs text-slate-600 font-medium">+44 20 7946 0912</p>
-              <p className="text-[11px] text-slate-500">uk@primeestatejournal.ng</p>
-            </div>
-
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
-              <span className="text-[10px] font-bold text-emerald-700 uppercase bg-emerald-100 px-2 py-0.5 rounded">
-                Houston Desk
-              </span>
-              <p className="font-bold text-slate-900 text-sm">Galleria Area, Houston TX</p>
-              <p className="text-xs text-slate-600 font-medium">+1 713 555 0192</p>
-              <p className="text-[11px] text-slate-500">us@primeestatejournal.ng</p>
             </div>
 
           </div>

@@ -139,28 +139,20 @@ export const Footer: React.FC<FooterProps> = ({
             </ul>
           </div>
 
-          {/* Col 5: Global Liaisons */}
+          {/* Col 5: Offices */}
           <div>
-            <h4 className="text-xs font-bold text-[#155EEF] uppercase tracking-wider mb-3">Global Offices</h4>
+            <h4 className="text-xs font-bold text-[#155EEF] uppercase tracking-wider mb-3">Offices</h4>
             <div className="space-y-2.5 text-xs text-slate-600">
               <div>
                 <p className="font-bold text-slate-900">Lagos HQ (Nigeria)</p>
                 <p className="text-[11px] text-slate-500 font-medium">Freedom Way, Lekki Phase 1, Lagos</p>
+                <p className="text-[11px] text-slate-700 font-semibold mt-0.5">09039215553</p>
               </div>
 
               <div>
                 <p className="font-bold text-slate-900">Abuja Bureau (Nigeria)</p>
                 <p className="text-[11px] text-slate-500 font-medium">Maitama District, Abuja FCT</p>
-              </div>
-
-              <div>
-                <p className="font-bold text-slate-900">London Liaison Desk (UK)</p>
-                <p className="text-[11px] text-slate-500 font-medium">+44 20 7946 0912</p>
-              </div>
-
-              <div>
-                <p className="font-bold text-slate-900">Houston Liaison Desk (USA)</p>
-                <p className="text-[11px] text-slate-500 font-medium">+1 713 555 0192</p>
+                <p className="text-[11px] text-slate-700 font-semibold mt-0.5">09033142485</p>
               </div>
             </div>
           </div>

@@ -338,8 +338,8 @@ export const NavigationMenuDrawer: React.FC<NavigationMenuDrawerProps> = ({
               </span>
             </div>
             <div className="mt-2 flex items-center justify-between text-[11px] text-slate-500">
-              <span>Lagos: <strong className="text-slate-800">+234 1 800 9000</strong></span>
-              <span>London: <strong className="text-slate-800">+44 20 7946 0912</strong></span>
+              <span>Hotline 1: <strong className="text-slate-800">09039215553</strong></span>
+              <span>Hotline 2: <strong className="text-slate-800">09033142485</strong></span>
             </div>
           </div>
         </div>
