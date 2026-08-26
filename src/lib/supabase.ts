@@ -316,12 +316,17 @@ export async function createAdminProperty(
 
     if (error) {
       console.error('Supabase createAdminProperty error:', error.message);
-      // Fallback cache
-      const cached = localStorage.getItem('pej_admin_properties');
-      const list: DbProperty[] = cached ? JSON.parse(cached) : [];
-      list.unshift(newProp);
-      localStorage.setItem('pej_admin_properties', JSON.stringify(list));
-      return { data: newProp, error: `Saved locally: ${error.message}` };
+      // Keep a local copy in cache as a safety net
+      try {
+        const cached = localStorage.getItem('pej_admin_properties');
+        const list: DbProperty[] = cached ? JSON.parse(cached) : [];
+        const filtered = list.filter((p) => p.id !== newProp.id);
+        filtered.unshift(newProp);
+        localStorage.setItem('pej_admin_properties', JSON.stringify(filtered));
+      } catch (e) {
+        console.error(e);
+      }
+      return { data: null, error: error.message };
     }
 
     return { data: (data as DbProperty) || newProp };
@@ -497,11 +502,16 @@ export async function createAdminBlogPost(
 
     if (error) {
       console.error('createAdminBlogPost error:', error.message);
-      const cached = localStorage.getItem('pej_admin_blog_posts');
-      const list: DbBlogPost[] = cached ? JSON.parse(cached) : [];
-      list.unshift(newPost);
-      localStorage.setItem('pej_admin_blog_posts', JSON.stringify(list));
-      return { data: newPost, error: `Saved locally: ${error.message}` };
+      try {
+        const cached = localStorage.getItem('pej_admin_blog_posts');
+        const list: DbBlogPost[] = cached ? JSON.parse(cached) : [];
+        const filtered = list.filter((p) => p.id !== newPost.id);
+        filtered.unshift(newPost);
+        localStorage.setItem('pej_admin_blog_posts', JSON.stringify(filtered));
+      } catch (e) {
+        console.error(e);
+      }
+      return { data: null, error: error.message };
     }
 
     return { data: (data as DbBlogPost) || newPost };

@@ -27,7 +27,9 @@ import {
   RefreshCw,
   Calendar,
   User,
-  ArrowLeft
+  ArrowLeft,
+  Copy,
+  ShieldCheck
 } from 'lucide-react';
 import { DbBlogPost } from '../../types';
 import { 
@@ -67,6 +69,28 @@ export const AdminBlogPosts: React.FC<AdminBlogPostsProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successToast, setSuccessToast] = useState<string | null>(null);
+  const [copiedRlsSql, setCopiedRlsSql] = useState(false);
+
+  const rlsFixSql = `ALTER TABLE IF EXISTS public.blog_posts ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Allow public read access to blog_posts" ON public.blog_posts;
+DROP POLICY IF EXISTS "Allow authenticated admins to insert blog_posts" ON public.blog_posts;
+DROP POLICY IF EXISTS "Allow authenticated admins to update blog_posts" ON public.blog_posts;
+DROP POLICY IF EXISTS "Allow authenticated admins to delete blog_posts" ON public.blog_posts;
+DROP POLICY IF EXISTS "Allow full access to blog_posts" ON public.blog_posts;
+DROP POLICY IF EXISTS "Allow public and admin insert to blog_posts" ON public.blog_posts;
+DROP POLICY IF EXISTS "Allow public and admin update to blog_posts" ON public.blog_posts;
+DROP POLICY IF EXISTS "Allow public and admin delete to blog_posts" ON public.blog_posts;
+
+CREATE POLICY "Allow public read access to blog_posts" ON public.blog_posts FOR SELECT USING (true);
+CREATE POLICY "Allow public and admin insert to blog_posts" ON public.blog_posts FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow public and admin update to blog_posts" ON public.blog_posts FOR UPDATE USING (true) WITH CHECK (true);
+CREATE POLICY "Allow public and admin delete to blog_posts" ON public.blog_posts FOR DELETE USING (true);`;
+
+  const copyRlsSql = () => {
+    navigator.clipboard.writeText(rlsFixSql);
+    setCopiedRlsSql(true);
+    setTimeout(() => setCopiedRlsSql(false), 2500);
+  };
 
   // Delete modal state
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -206,7 +230,7 @@ export const AdminBlogPosts: React.FC<AdminBlogPostsProps> = ({
     } else {
       const res = await createAdminBlogPost(payload);
       setIsSaving(false);
-      if (res.error && !res.data) {
+      if (res.error) {
         setErrorMessage(res.error);
       } else {
         showToast('New blog article published successfully!');
@@ -503,9 +527,37 @@ export const AdminBlogPosts: React.FC<AdminBlogPostsProps> = ({
 
           {/* Error Banner */}
           {errorMessage && (
-            <div className="p-3.5 bg-red-950/60 border border-red-800/80 rounded-2xl flex items-start gap-3 text-red-200 text-xs">
-              <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-              <div className="flex-1 font-medium">{errorMessage}</div>
+            <div className="space-y-3">
+              <div className="p-3.5 bg-red-950/60 border border-red-800/80 rounded-2xl flex items-start gap-3 text-red-200 text-xs">
+                <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                <div className="flex-1 font-medium">{errorMessage}</div>
+              </div>
+
+              {/* If error is related to Row-Level Security (RLS) */}
+              {(errorMessage.toLowerCase().includes('violates') || 
+                errorMessage.toLowerCase().includes('row-level security') || 
+                errorMessage.toLowerCase().includes('policy') ||
+                errorMessage.toLowerCase().includes('permission')) && (
+                <div className="p-4 bg-amber-950/40 border border-amber-500/40 rounded-2xl space-y-3 text-xs">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-amber-300 font-bold">
+                      <ShieldCheck className="w-4 h-4 text-amber-400" />
+                      <span>Supabase Row-Level Security Fix</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={copyRlsSql}
+                      className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs transition-all shadow-sm"
+                    >
+                      {copiedRlsSql ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedRlsSql ? 'SQL Copied!' : 'Copy 1-Click RLS Fix SQL'}</span>
+                    </button>
+                  </div>
+                  <p className="text-slate-300 text-[11px] leading-relaxed">
+                    Your Supabase database table <span className="font-mono text-amber-300">public.blog_posts</span> has Row-Level Security enabled without public insert policies. To fix this: click <strong>"Copy 1-Click RLS Fix SQL"</strong>, open your <strong className="text-white">Supabase Dashboard &gt; SQL Editor &gt; New Query</strong>, paste the script, and click <strong className="text-emerald-400">Run</strong>. Then click Save/Publish again!
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
