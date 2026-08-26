@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { AdminDashboardView } from '../../types';
-import { AdminRouteGuard } from './AdminRouteGuard';
 import { AdminLayout } from './AdminLayout';
 import { AdminOverview } from './AdminOverview';
 import { AdminProperties } from './AdminProperties';
@@ -20,49 +19,48 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onReturnToSite }
   const [openBlogEditor, setOpenBlogEditor] = useState(false);
 
   return (
-    <AdminRouteGuard onReturnToSite={onReturnToSite}>
-      <AdminLayout
-        currentView={currentView}
-        onViewChange={(view) => {
-          setCurrentView(view);
-          setOpenPropertyModal(false);
-          setOpenBlogEditor(false);
-        }}
-        onReturnToSite={onReturnToSite}
-      >
-        {currentView === 'overview' && (
-          <AdminOverview
-            onNavigate={(view) => setCurrentView(view)}
-            onAddNewProperty={() => {
-              setOpenPropertyModal(true);
-              setCurrentView('properties');
-            }}
-            onAddNewBlogPost={() => {
-              setOpenBlogEditor(true);
-              setCurrentView('blog');
-            }}
-          />
-        )}
+    <AdminLayout
+      currentView={currentView}
+      onViewChange={(view) => {
+        setCurrentView(view);
+        setOpenPropertyModal(false);
+        setOpenBlogEditor(false);
+      }}
+      onReturnToSite={onReturnToSite}
+    >
+      {currentView === 'overview' && (
+        <AdminOverview
+          onNavigate={(view) => setCurrentView(view)}
+          onAddNewProperty={() => {
+            setOpenPropertyModal(true);
+            setCurrentView('properties');
+          }}
+          onAddNewBlogPost={() => {
+            setOpenBlogEditor(true);
+            setCurrentView('blog');
+          }}
+        />
+      )}
 
-        {currentView === 'properties' && (
-          <AdminProperties
-            initialOpenModal={openPropertyModal}
-            onModalClose={() => setOpenPropertyModal(false)}
-          />
-        )}
+      {currentView === 'properties' && (
+        <AdminProperties
+          initialOpenModal={openPropertyModal}
+          onModalClose={() => setOpenPropertyModal(false)}
+        />
+      )}
 
-        {currentView === 'blog' && (
-          <AdminBlogPosts
-            initialOpenEditor={openBlogEditor}
-            onEditorClose={() => setOpenBlogEditor(false)}
-          />
-        )}
+      {currentView === 'blog' && (
+        <AdminBlogPosts
+          initialOpenEditor={openBlogEditor}
+          onEditorClose={() => setOpenBlogEditor(false)}
+        />
+      )}
 
-        {currentView === 'profile' && <AdminProfileSettings />}
+      {currentView === 'profile' && <AdminProfileSettings />}
 
-        {currentView === 'database' && <AdminDatabaseDesk />}
-      </AdminLayout>
-    </AdminRouteGuard>
+      {currentView === 'database' && <AdminDatabaseDesk />}
+    </AdminLayout>
   );
 };
 
+export default AdminDashboard;
