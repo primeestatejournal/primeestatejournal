@@ -1,33 +1,113 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Property, InquiryFormData, DbProperty, DbBlogPost, Profile } from '../types';
 
-const env = (import.meta as any).env || {};
-const supabaseUrl = env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = env.VITE_SUPABASE_ANON_KEY || '';
+export interface SupabaseConfigInfo {
+  url: string;
+  anonKey: string;
+  source: 'env' | 'localStorage' | 'none';
+  isValid: boolean;
+}
 
-export const isSupabaseConfigured = Boolean(
-  supabaseUrl && 
-  supabaseAnonKey && 
-  supabaseUrl.startsWith('http') &&
-  !supabaseUrl.includes('your-supabase-project') && 
-  !supabaseAnonKey.includes('your-supabase-anon-key')
-);
+export function getStoredSupabaseConfig(): SupabaseConfigInfo {
+  if (typeof window !== 'undefined') {
+    const storedUrl = localStorage.getItem('pej_supabase_url');
+    const storedKey = localStorage.getItem('pej_supabase_anon_key');
+    if (storedUrl && storedKey && storedUrl.startsWith('http')) {
+      return {
+        url: storedUrl.trim(),
+        anonKey: storedKey.trim(),
+        source: 'localStorage',
+        isValid: true,
+      };
+    }
+  }
+
+  const env = (import.meta as any).env || {};
+  const envUrl = (env.VITE_SUPABASE_URL || '').trim();
+  const envKey = (env.VITE_SUPABASE_ANON_KEY || '').trim();
+
+  const isValidEnv = Boolean(
+    envUrl && 
+    envKey && 
+    envUrl.startsWith('http') &&
+    !envUrl.includes('your-supabase-project') && 
+    !envKey.includes('your-supabase-anon-key')
+  );
+
+  if (isValidEnv) {
+    return {
+      url: envUrl,
+      anonKey: envKey,
+      source: 'env',
+      isValid: true,
+    };
+  }
+
+  return {
+    url: envUrl || '',
+    anonKey: envKey || '',
+    source: 'none',
+    isValid: false,
+  };
+}
+
+export function checkIsSupabaseConfigured(): boolean {
+  return getStoredSupabaseConfig().isValid;
+}
+
+export const isSupabaseConfigured = checkIsSupabaseConfigured();
 
 let supabaseInstance: SupabaseClient | null = null;
+let currentConfigKey = '';
 
 export function getSupabase(): SupabaseClient | null {
-  if (!isSupabaseConfigured) {
+  const config = getStoredSupabaseConfig();
+  if (!config.isValid || !config.url || !config.anonKey) {
     return null;
   }
-  if (!supabaseInstance) {
+
+  const newConfigKey = `${config.url}_${config.anonKey}`;
+  if (!supabaseInstance || currentConfigKey !== newConfigKey) {
     try {
-      supabaseInstance = createClient(supabaseUrl, supabaseAnonKey);
+      supabaseInstance = createClient(config.url, config.anonKey, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true,
+        },
+      });
+      currentConfigKey = newConfigKey;
     } catch (e) {
       console.warn('Failed to initialize Supabase client:', e);
       return null;
     }
   }
   return supabaseInstance;
+}
+
+export function saveCustomSupabaseConfig(url: string, anonKey: string): boolean {
+  if (typeof window === 'undefined') return false;
+  const cleanUrl = url.trim();
+  const cleanKey = anonKey.trim();
+
+  if (!cleanUrl.startsWith('http') || !cleanKey) {
+    return false;
+  }
+
+  localStorage.setItem('pej_supabase_url', cleanUrl);
+  localStorage.setItem('pej_supabase_anon_key', cleanKey);
+  supabaseInstance = null;
+  currentConfigKey = '';
+  return true;
+}
+
+export function clearCustomSupabaseConfig(): void {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('pej_supabase_url');
+    localStorage.removeItem('pej_supabase_anon_key');
+    supabaseInstance = null;
+    currentConfigKey = '';
+  }
 }
 
 // ----------------------------------------------------

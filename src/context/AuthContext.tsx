@@ -1,6 +1,14 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { User, Session } from '@supabase/supabase-js';
-import { getSupabase, isSupabaseConfigured, fetchAdminProfile, upsertAdminProfile } from '../lib/supabase';
+import { 
+  getSupabase, 
+  getStoredSupabaseConfig, 
+  saveCustomSupabaseConfig, 
+  clearCustomSupabaseConfig, 
+  SupabaseConfigInfo, 
+  fetchAdminProfile, 
+  upsertAdminProfile 
+} from '../lib/supabase';
 import { Profile } from '../types';
 
 interface AuthContextType {
@@ -9,8 +17,15 @@ interface AuthContextType {
   profile: Profile | null;
   loading: boolean;
   isConfigured: boolean;
+  supabaseConfig: SupabaseConfigInfo;
+  updateSupabaseConfig: (url: string, anonKey: string) => boolean;
+  resetSupabaseConfig: () => void;
   signIn: (email: string, password: string) => Promise<{ error?: string }>;
-  signUp: (email: string, password: string, fullName: string) => Promise<{ error?: string }>;
+  signInWithOtp: (email: string) => Promise<{ error?: string; message?: string }>;
+  verifyOtp: (email: string, token: string) => Promise<{ error?: string }>;
+  resetPassword: (email: string) => Promise<{ error?: string; message?: string }>;
+  resendConfirmationEmail: (email: string) => Promise<{ error?: string; message?: string }>;
+  signUp: (email: string, password: string, fullName: string) => Promise<{ error?: string; needsEmailConfirmation?: boolean }>;
   signOut: () => Promise<void>;
   updateProfile: (fullName: string) => Promise<{ error?: string }>;
   loginAsDemoAdmin: () => void;
@@ -23,9 +38,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [supabaseConfig, setSupabaseConfig] = useState<SupabaseConfigInfo>(getStoredSupabaseConfig());
 
-  // Load session on startup
-  useEffect(() => {
+  const initAuth = useCallback(() => {
+    const config = getStoredSupabaseConfig();
+    setSupabaseConfig(config);
     const supabase = getSupabase();
 
     if (!supabase) {
@@ -53,6 +70,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else {
         setLoading(false);
       }
+    }).catch(err => {
+      console.error('Error fetching session:', err);
+      setLoading(false);
     });
 
     // 2. Listen to real-time auth changes
@@ -74,22 +94,58 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
+  // Load session on startup
+  useEffect(() => {
+    const cleanup = initAuth();
+    return cleanup;
+  }, [initAuth]);
+
+  const updateSupabaseConfig = (url: string, anonKey: string): boolean => {
+    const success = saveCustomSupabaseConfig(url, anonKey);
+    if (success) {
+      initAuth();
+    }
+    return success;
+  };
+
+  const resetSupabaseConfig = () => {
+    clearCustomSupabaseConfig();
+    initAuth();
+  };
+
   const loadUserProfile = async (currentUser: User) => {
     try {
       let prof = await fetchAdminProfile(currentUser.id);
       if (!prof) {
-        // Create initial profile
+        // Create initial default admin profile
         prof = {
           id: currentUser.id,
           full_name: (currentUser.user_metadata?.full_name as string) || currentUser.email?.split('@')[0] || 'Admin User',
           email: currentUser.email || null,
           role: 'admin',
         };
-        await upsertAdminProfile(prof);
+        try {
+          await upsertAdminProfile(prof);
+        } catch (e) {
+          console.warn('Could not persist profile to Supabase public.profiles:', e);
+        }
       }
       setProfile(prof);
+      try {
+        localStorage.setItem('pej_active_admin_user', JSON.stringify({ user: currentUser, profile: prof }));
+      } catch (e) {
+        console.error(e);
+      }
     } catch (err) {
       console.error('Error loading profile:', err);
+      // Fallback profile so user is never blocked from admin view
+      const fallbackProf: Profile = {
+        id: currentUser.id,
+        full_name: (currentUser.user_metadata?.full_name as string) || currentUser.email?.split('@')[0] || 'Admin User',
+        email: currentUser.email || null,
+        role: 'admin',
+      };
+      setProfile(fallbackProf);
     } finally {
       setLoading(false);
     }
@@ -97,6 +153,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signIn = async (email: string, password: string): Promise<{ error?: string }> => {
     setLoading(true);
+    const cleanEmail = email.trim().toLowerCase();
     const supabase = getSupabase();
 
     if (!supabase) {
@@ -107,13 +164,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       const mockUser = {
         id: 'admin-usr-01',
-        email,
-        user_metadata: { full_name: email.split('@')[0] },
+        email: cleanEmail,
+        user_metadata: { full_name: cleanEmail.split('@')[0] },
       } as any;
       const mockProfile: Profile = {
         id: 'admin-usr-01',
-        full_name: email.split('@')[0].toUpperCase(),
-        email,
+        full_name: cleanEmail.split('@')[0].toUpperCase(),
+        email: cleanEmail,
         role: 'admin',
       };
       setUser(mockUser);
@@ -125,7 +182,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
+        email: cleanEmail,
         password,
       });
 
@@ -146,20 +203,159 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const signUp = async (email: string, password: string, fullName: string): Promise<{ error?: string }> => {
+  const signInWithOtp = async (email: string): Promise<{ error?: string; message?: string }> => {
     setLoading(true);
+    const cleanEmail = email.trim().toLowerCase();
+    const supabase = getSupabase();
+
+    if (!supabase) {
+      const mockUser = {
+        id: 'admin-usr-otp',
+        email: cleanEmail,
+        user_metadata: { full_name: cleanEmail.split('@')[0] },
+      } as any;
+      const mockProfile: Profile = {
+        id: 'admin-usr-otp',
+        full_name: cleanEmail.split('@')[0].toUpperCase(),
+        email: cleanEmail,
+        role: 'admin',
+      };
+      setUser(mockUser);
+      setProfile(mockProfile);
+      localStorage.setItem('pej_active_admin_user', JSON.stringify({ user: mockUser, profile: mockProfile }));
+      setLoading(false);
+      return { message: 'Demo OTP login successful.' };
+    }
+
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: cleanEmail,
+        options: {
+          emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/admin` : undefined,
+        },
+      });
+      setLoading(false);
+      if (error) {
+        return { error: error.message };
+      }
+      return { message: `Magic link & OTP code sent to ${cleanEmail}. Please check your email inbox.` };
+    } catch (err: any) {
+      setLoading(false);
+      return { error: err.message || 'Failed to send OTP code.' };
+    }
+  };
+
+  const verifyOtp = async (email: string, token: string): Promise<{ error?: string }> => {
+    setLoading(true);
+    const cleanEmail = email.trim().toLowerCase();
+    const supabase = getSupabase();
+
+    if (!supabase) {
+      const mockUser = {
+        id: 'admin-usr-verified',
+        email: cleanEmail,
+        user_metadata: { full_name: cleanEmail.split('@')[0] },
+      } as any;
+      const mockProfile: Profile = {
+        id: 'admin-usr-verified',
+        full_name: cleanEmail.split('@')[0].toUpperCase(),
+        email: cleanEmail,
+        role: 'admin',
+      };
+      setUser(mockUser);
+      setProfile(mockProfile);
+      localStorage.setItem('pej_active_admin_user', JSON.stringify({ user: mockUser, profile: mockProfile }));
+      setLoading(false);
+      return {};
+    }
+
+    try {
+      const { data, error } = await supabase.auth.verifyOtp({
+        email: cleanEmail,
+        token: token.trim(),
+        type: 'email',
+      });
+
+      if (error) {
+        setLoading(false);
+        return { error: error.message };
+      }
+
+      if (data.user) {
+        setUser(data.user);
+        setSession(data.session);
+        await loadUserProfile(data.user);
+      }
+      return {};
+    } catch (err: any) {
+      setLoading(false);
+      return { error: err.message || 'Failed to verify OTP code.' };
+    }
+  };
+
+  const resetPassword = async (email: string): Promise<{ error?: string; message?: string }> => {
+    const cleanEmail = email.trim().toLowerCase();
+    const supabase = getSupabase();
+
+    if (!supabase) {
+      return { message: `Password reset link simulated for ${cleanEmail}.` };
+    }
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(cleanEmail, {
+        redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/admin` : undefined,
+      });
+
+      if (error) {
+        return { error: error.message };
+      }
+      return { message: `Password reset instructions sent to ${cleanEmail}. Please check your email inbox.` };
+    } catch (err: any) {
+      return { error: err.message || 'Failed to send password reset email.' };
+    }
+  };
+
+  const resendConfirmationEmail = async (email: string): Promise<{ error?: string; message?: string }> => {
+    const cleanEmail = email.trim().toLowerCase();
+    const supabase = getSupabase();
+
+    if (!supabase) {
+      return { message: `Confirmation email re-sent to ${cleanEmail}.` };
+    }
+
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: cleanEmail,
+        options: {
+          emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/admin` : undefined,
+        },
+      });
+
+      if (error) {
+        return { error: error.message };
+      }
+      return { message: `Verification email re-sent to ${cleanEmail}. Check your inbox/spam folder.` };
+    } catch (err: any) {
+      return { error: err.message || 'Failed to re-send confirmation email.' };
+    }
+  };
+
+  const signUp = async (email: string, password: string, fullName: string): Promise<{ error?: string; needsEmailConfirmation?: boolean }> => {
+    setLoading(true);
+    const cleanEmail = email.trim().toLowerCase();
     const supabase = getSupabase();
 
     if (!supabase) {
       const mockUser = {
         id: `admin-usr-${Date.now()}`,
-        email,
+        email: cleanEmail,
         user_metadata: { full_name: fullName },
       } as any;
       const mockProfile: Profile = {
         id: mockUser.id,
         full_name: fullName,
-        email,
+        email: cleanEmail,
         role: 'admin',
       };
       setUser(mockUser);
@@ -171,12 +367,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       const { data, error } = await supabase.auth.signUp({
-        email: email.trim(),
+        email: cleanEmail,
         password,
         options: {
           data: {
             full_name: fullName.trim(),
           },
+          emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/admin` : undefined,
         },
       });
 
@@ -192,11 +389,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const newProf: Profile = {
           id: data.user.id,
           full_name: fullName.trim(),
-          email: data.user.email || email,
+          email: data.user.email || cleanEmail,
           role: 'admin',
         };
-        await upsertAdminProfile(newProf);
+        try {
+          await upsertAdminProfile(newProf);
+        } catch (e) {
+          console.warn('Could not save initial profile to Supabase:', e);
+        }
         setProfile(newProf);
+
+        // Check if email confirmation is required by Supabase (session is null)
+        if (!data.session) {
+          setLoading(false);
+          return {
+            needsEmailConfirmation: true,
+          };
+        }
       }
 
       setLoading(false);
@@ -262,8 +471,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         session,
         profile,
         loading,
-        isConfigured: isSupabaseConfigured,
+        isConfigured: supabaseConfig.isValid,
+        supabaseConfig,
+        updateSupabaseConfig,
+        resetSupabaseConfig,
         signIn,
+        signInWithOtp,
+        verifyOtp,
+        resetPassword,
+        resendConfirmationEmail,
         signUp,
         signOut,
         updateProfile,

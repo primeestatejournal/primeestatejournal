@@ -9,13 +9,21 @@ import {
   Sparkles, 
   CheckCircle2, 
   Table, 
-  Play
+  Play,
+  SlidersHorizontal,
+  RefreshCw,
+  AlertCircle
 } from 'lucide-react';
 import { isSupabaseConfigured, getSupabase } from '../../lib/supabase';
+import { useAuth } from '../../context/AuthContext';
 
 export const AdminDatabaseDesk: React.FC = () => {
+  const { supabaseConfig, updateSupabaseConfig, resetSupabaseConfig, isConfigured } = useAuth();
   const [copied, setCopied] = useState(false);
   const [copiedRls, setCopiedRls] = useState(false);
+  const [showConfigEdit, setShowConfigEdit] = useState(false);
+  const [customUrl, setCustomUrl] = useState(supabaseConfig.url || '');
+  const [customKey, setCustomKey] = useState(supabaseConfig.anonKey || '');
   const [testResult, setTestResult] = useState<{ status: 'idle' | 'testing' | 'success' | 'warning'; message?: string }>({
     status: 'idle',
   });
@@ -319,9 +327,17 @@ ON public.inquiries FOR SELECT USING (true);
 
         <div className="flex flex-wrap items-center gap-3">
           <button
+            onClick={() => setShowConfigEdit(!showConfigEdit)}
+            className="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3.5 py-2.5 rounded-xl border border-slate-700 flex items-center gap-2 transition-all cursor-pointer"
+          >
+            <SlidersHorizontal className="w-3.5 h-3.5 text-amber-400" />
+            <span>Connection Settings</span>
+          </button>
+
+          <button
             onClick={testConnection}
             disabled={testResult.status === 'testing'}
-            className="bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-bold px-4 py-2.5 rounded-xl border border-slate-700 flex items-center gap-2 transition-all"
+            className="bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-bold px-4 py-2.5 rounded-xl border border-slate-700 flex items-center gap-2 transition-all cursor-pointer"
           >
             <Play className="w-3.5 h-3.5 text-emerald-400" />
             <span>{testResult.status === 'testing' ? 'Testing Connection...' : 'Test Connection'}</span>
@@ -329,7 +345,7 @@ ON public.inquiries FOR SELECT USING (true);
 
           <button
             onClick={copyRlsFix}
-            className="bg-amber-600 hover:bg-amber-500 active:scale-95 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg shadow-amber-900/30 flex items-center gap-2 transition-all"
+            className="bg-amber-600 hover:bg-amber-500 active:scale-95 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg shadow-amber-900/30 flex items-center gap-2 transition-all cursor-pointer"
             title="Copy RLS Fix Script"
           >
             {copiedRls ? (
@@ -347,7 +363,7 @@ ON public.inquiries FOR SELECT USING (true);
 
           <button
             onClick={copySql}
-            className="bg-[#155EEF] hover:bg-blue-600 active:scale-95 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg shadow-blue-900/40 flex items-center gap-2 transition-all"
+            className="bg-[#155EEF] hover:bg-blue-600 active:scale-95 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg shadow-blue-900/40 flex items-center gap-2 transition-all cursor-pointer"
           >
             {copied ? (
               <>
@@ -363,6 +379,81 @@ ON public.inquiries FOR SELECT USING (true);
           </button>
         </div>
       </div>
+
+      {/* Supabase Connection Settings Drawer */}
+      {showConfigEdit && (
+        <div className="bg-[#0B1728] border border-amber-500/40 rounded-3xl p-6 shadow-xl space-y-4 animate-fadeIn">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-white font-bold text-sm">
+              <Database className="w-4 h-4 text-amber-400" />
+              <span>Configure Connected Supabase Project</span>
+            </div>
+            <button
+              onClick={() => setShowConfigEdit(false)}
+              className="text-xs text-slate-400 hover:text-white"
+            >
+              Close
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1">
+                Supabase Project URL
+              </label>
+              <input
+                type="text"
+                value={customUrl}
+                onChange={(e) => setCustomUrl(e.target.value)}
+                placeholder="https://xyzcompany.supabase.co"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs font-mono text-white placeholder-slate-600 outline-none focus:border-amber-400"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1">
+                Supabase Anon Public Key
+              </label>
+              <input
+                type="password"
+                value={customKey}
+                onChange={(e) => setCustomKey(e.target.value)}
+                placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs font-mono text-white placeholder-slate-600 outline-none focus:border-amber-400"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between pt-1">
+            <span className="text-[11px] text-slate-400">
+              Current Source: <span className="font-mono text-amber-300">{supabaseConfig.source}</span> {isConfigured ? '(Active)' : '(Inactive)'}
+            </span>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  resetSupabaseConfig();
+                  setCustomUrl('');
+                  setCustomKey('');
+                }}
+                className="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3.5 py-2 rounded-xl"
+              >
+                Reset
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (updateSupabaseConfig(customUrl, customKey)) {
+                    testConnection();
+                  }
+                }}
+                className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-4 py-2 rounded-xl shadow transition-all"
+              >
+                Save & Connect Project
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* RLS Fix Quick Guide Card */}
       <div className="bg-amber-950/30 border border-amber-500/30 rounded-2xl p-5 text-xs text-amber-200 space-y-3">
