@@ -14,9 +14,7 @@ import {
   Database,
   SlidersHorizontal,
   RefreshCw,
-  Check,
-  Zap,
-  ArrowUpRight
+  Check
 } from 'lucide-react';
 import { getSupabase } from '../../lib/supabase';
 
@@ -27,7 +25,6 @@ interface AdminLoginProps {
 export const AdminLogin: React.FC<AdminLoginProps> = ({ onReturnToSite }) => {
   const { 
     signIn, 
-    instantAdminLogin, 
     isConfigured,
     supabaseConfig,
     updateSupabaseConfig,
@@ -80,20 +77,6 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onReturnToSite }) => {
         window.location.hash = '#/admin';
       }
     }
-  };
-
-  // Instant Executive Access Fallback
-  const handleDirectAccess = () => {
-    setErrorMessage(null);
-    setSuccessMessage('Direct executive access granted. Entering dashboard...');
-    setIsSubmitting(true);
-    setTimeout(() => {
-      instantAdminLogin(cleanEmail || 'jonyebuchi215@gmail.com', 'Executive Administrator');
-      setIsSubmitting(false);
-      if (typeof window !== 'undefined') {
-        window.location.hash = '#/admin';
-      }
-    }, 300);
   };
 
   // Database connection test & save handler
@@ -304,25 +287,13 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onReturnToSite }) => {
 
           {/* Error Message */}
           {errorMessage && (
-            <div className="mb-5 p-4 bg-red-950/70 border border-red-800 rounded-2xl text-xs text-red-200 space-y-2 animate-fadeIn">
+            <div className="mb-5 p-4 bg-red-950/70 border border-red-800 rounded-2xl text-xs text-red-200 animate-fadeIn">
               <div className="flex items-start gap-2.5">
                 <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
                 <div className="flex-1">
                   <div className="font-semibold text-red-300">Authentication Error</div>
                   <p className="text-[11px] text-red-200/90 leading-relaxed mt-0.5">{errorMessage}</p>
                 </div>
-              </div>
-
-              <div className="pt-2 flex items-center justify-between border-t border-red-900/50">
-                <span className="text-[11px] text-slate-300">Need instant dashboard access?</span>
-                <button
-                  type="button"
-                  onClick={handleDirectAccess}
-                  className="text-amber-400 hover:text-amber-300 text-xs font-bold underline underline-offset-2 flex items-center gap-1 cursor-pointer"
-                >
-                  <span>Bypass & Enter Directly</span>
-                  <ArrowUpRight className="w-3 h-3" />
-                </button>
               </div>
             </div>
           )}
@@ -402,18 +373,6 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onReturnToSite }) => {
                     <span>Sign In to Dashboard</span>
                   </>
                 )}
-              </button>
-
-              {/* Direct 1-Click Executive Access Button */}
-              <button
-                id="btn-quick-signin"
-                type="button"
-                onClick={handleDirectAccess}
-                disabled={isSubmitting}
-                className="w-full bg-slate-800/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/60 font-semibold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
-              >
-                <Zap className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                <span>1-Click Executive Access</span>
               </button>
             </div>
           </form>

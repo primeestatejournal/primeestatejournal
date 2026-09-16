@@ -348,7 +348,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     setLoading(false);
-    return { error: 'Invalid email or password. Please verify your credentials or use the Direct Access button.' };
+    return { error: 'Invalid email or password. Please verify your credentials and try again.' };
   };
 
   // Sign Up is disabled - Public admin registration is strictly disallowed
