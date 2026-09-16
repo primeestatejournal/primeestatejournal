@@ -212,6 +212,44 @@ export const Hero: React.FC<HeroProps> = ({
                   Diaspora Escrow Ready Only
                 </span>
               </label>
+
+              {/* Availability Status Filter */}
+              <div className="flex items-center gap-1 bg-slate-100/90 border border-slate-200/80 rounded-lg p-0.5 text-xs">
+                <span className="text-[10px] uppercase font-bold text-slate-500 px-1.5">Status:</span>
+                <button
+                  type="button"
+                  onClick={() => setFilter((prev) => ({ ...prev, availabilityFilter: 'all' }))}
+                  className={`px-2 py-0.5 rounded-md font-semibold transition-all ${
+                    (filter.availabilityFilter || 'all') === 'all'
+                      ? 'bg-white text-slate-900 shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  All
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFilter((prev) => ({ ...prev, availabilityFilter: 'available' }))}
+                  className={`px-2 py-0.5 rounded-md font-semibold transition-all ${
+                    filter.availabilityFilter === 'available'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Available
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFilter((prev) => ({ ...prev, availabilityFilter: 'sold' }))}
+                  className={`px-2 py-0.5 rounded-md font-semibold transition-all ${
+                    filter.availabilityFilter === 'sold'
+                      ? 'bg-rose-600 text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Sold
+                </button>
+              </div>
             </div>
 
             <div className="flex items-center gap-2">

@@ -140,6 +140,7 @@ function AppContent() {
     verifiedOnly: false,
     diasporaOnly: false,
     titleFilter: '',
+    availabilityFilter: 'all',
   });
 
   const toggleSaveProperty = (propertyId: string) => {
@@ -184,6 +185,14 @@ function AppContent() {
         return false;
       }
 
+      // Availability Status filter
+      if (filter.availabilityFilter && filter.availabilityFilter !== 'all') {
+        const status = p.availability_status || 'available';
+        if (status !== filter.availabilityFilter) {
+          return false;
+        }
+      }
+
       // Toggles
       if (filter.verifiedOnly && (p.dossier?.legalRiskScore || 0) < 98) return false;
       if (filter.diasporaOnly && !p.escrowProtected) return false;
@@ -193,6 +202,14 @@ function AppContent() {
       if (filter.sortBy === 'price-asc') return a.priceNaira - b.priceNaira;
       if (filter.sortBy === 'price-desc') return b.priceNaira - a.priceNaira;
       if (filter.sortBy === 'highest-yield') return (b.dossier?.legalRiskScore || 0) - (a.dossier?.legalRiskScore || 0);
+
+      // In recommended sort, prioritize 'available' listings above 'sold'
+      const aStatus = a.availability_status || 'available';
+      const bStatus = b.availability_status || 'available';
+      if (aStatus !== bStatus) {
+        return aStatus === 'available' ? -1 : 1;
+      }
+
       return 0; // recommended
     });
   }, [filter, propertiesList]);

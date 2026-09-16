@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, ShieldCheck, MapPin, CheckCircle2, FileText, Calendar, Building2, Phone, Mail, Lock, Calculator, ArrowRight, Video, Sparkles } from 'lucide-react';
 import { Property, CurrencyCode } from '../types';
 import { formatPriceByCurrency } from '../data/properties';
+import { getEmbedVideoUrl } from '../lib/supabase';
 
 interface PropertyDetailModalProps {
   property: Property | null;
@@ -23,6 +24,8 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
   if (!property) return null;
 
   const priceDisplay = formatPriceByCurrency(property.priceNaira, currency);
+  const isSold = property.availability_status === 'sold';
+  const videoEmbedUrl = property.video_url ? getEmbedVideoUrl(property.video_url) : null;
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
@@ -31,11 +34,21 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
         {/* Sticky Header Bar */}
         <div className="bg-slate-900 text-white p-5 sticky top-0 z-20 flex items-center justify-between border-b border-slate-800">
           <div>
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
               <span className="bg-[#155EEF] text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded">
                 {property.typeLabel}
               </span>
-              <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+              {isSold ? (
+                <span className="bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-xs">
+                  Sold
+                </span>
+              ) : (
+                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  Available
+                </span>
+              )}
+              <span className="bg-slate-800 text-slate-300 border border-slate-700 text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                 {property.verificationStatus}
               </span>
@@ -183,6 +196,30 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                 <p className="text-xs text-slate-600 leading-relaxed">{property.description}</p>
               </div>
 
+              {/* Video Tour Section (if available) */}
+              {videoEmbedUrl && (
+                <div className="bg-slate-950 rounded-2xl p-4 sm:p-5 border border-slate-800 space-y-3 shadow-md">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                      <Video className="w-4 h-4 text-blue-400" />
+                      <span>HD Video Tour &amp; Drone Walkthrough</span>
+                    </h3>
+                    <span className="text-[10px] text-blue-300 font-semibold bg-blue-500/20 px-2 py-0.5 rounded border border-blue-400/30">
+                      Verified Media
+                    </span>
+                  </div>
+                  <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-black border border-slate-800 shadow-inner">
+                    <iframe
+                      src={videoEmbedUrl}
+                      title={`${property.title} Video Tour`}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      className="w-full h-full border-0"
+                    />
+                  </div>
+                </div>
+              )}
+
               {/* Key Features List */}
               <div>
                 <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3">Key Features & Infrastructure</h3>
@@ -228,9 +265,20 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
               <div className="bg-slate-900 text-white rounded-2xl p-5 border border-slate-800 shadow-lg space-y-4">
                 <div className="border-b border-slate-800 pb-3">
                   <span className="text-[10px] text-blue-300 font-bold uppercase tracking-wider block mb-1">Escrow & Legal Safeguard</span>
-                  <p className="text-sm font-bold text-white font-sans">Diaspora Ready Purchase</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-bold text-white font-sans">
+                      {isSold ? 'Listing Closed / Sold' : 'Diaspora Ready Purchase'}
+                    </p>
+                    {isSold && (
+                      <span className="bg-rose-600 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded">
+                        Sold
+                      </span>
+                    )}
+                  </div>
                   <p className="text-xs text-gray-300 mt-1">
-                    Complete transaction with independent legal deed drafting and milestone escrow releases.
+                    {isSold
+                      ? 'This property has been successfully acquired. Contact our diaspora desk for upcoming inventory or identical phases.'
+                      : 'Complete transaction with independent legal deed drafting and milestone escrow releases.'}
                   </p>
                 </div>
 
@@ -251,13 +299,23 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                     Book Live HD Drone Tour
                   </button>
 
-                  <button
-                    onClick={() => onRequestInquiry(property, 'escrow')}
-                    className="w-full bg-[#155EEF] hover:bg-blue-600 text-white py-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-md"
-                  >
-                    <Lock className="w-4 h-4 text-[#D4A72C]" />
-                    Proceed With Escrow
-                  </button>
+                  {isSold ? (
+                    <button
+                      onClick={() => onRequestInquiry(property, 'advisor')}
+                      className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 py-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-md"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      Inquire About Next Available Phase
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => onRequestInquiry(property, 'escrow')}
+                      className="w-full bg-[#155EEF] hover:bg-blue-600 text-white py-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-md"
+                    >
+                      <Lock className="w-4 h-4 text-[#D4A72C]" />
+                      Proceed With Escrow
+                    </button>
+                  )}
                 </div>
 
                 <div className="pt-2 text-center">

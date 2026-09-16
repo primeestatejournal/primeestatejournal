@@ -103,6 +103,8 @@ export interface Property {
   developerVerified: boolean;
   dossier: VerificationDossier;
   paymentPlan?: PaymentPlanOption;
+  video_url?: string | null;
+  availability_status: 'available' | 'sold';
 }
 
 export interface FilterState {
@@ -116,6 +118,7 @@ export interface FilterState {
   verifiedOnly: boolean;
   diasporaOnly: boolean;
   titleFilter: string;
+  availabilityFilter?: 'all' | 'available' | 'sold';
 }
 
 export interface VerificationRequestData {
@@ -209,6 +212,8 @@ export interface DbProperty {
   gallery_image_url_2?: string | null;
   gallery_image_url_3?: string | null;
   gallery_image_url_4?: string | null;
+  video_url?: string | null;
+  availability_status?: 'available' | 'sold';
   created_at?: string;
   updated_at?: string;
 }

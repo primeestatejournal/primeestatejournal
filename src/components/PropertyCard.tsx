@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, MapPin, CheckCircle2, FileText, ArrowUpRight, Bookmark, Building2, Lock, Sparkles, Scale } from 'lucide-react';
+import { ShieldCheck, MapPin, CheckCircle2, FileText, ArrowUpRight, Bookmark, Building2, Lock, Sparkles, Scale, Video } from 'lucide-react';
 import { Property, CurrencyCode } from '../types';
 import { formatPriceByCurrency } from '../data/properties';
 
@@ -21,9 +21,10 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
   onSelectProperty,
 }) => {
   const displayPrice = formatPriceByCurrency(property.priceNaira, currency);
+  const isSold = property.availability_status === 'sold';
 
   return (
-    <div className="group bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col h-full hover:border-slate-300">
+    <div className={`group bg-white rounded-2xl border ${isSold ? 'border-slate-300/80 opacity-95' : 'border-slate-200/90'} overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col h-full hover:border-slate-300`}>
       
       {/* Property Header Banner with Badges */}
       <div 
@@ -37,16 +38,30 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
           <img
             src={property.images[0]}
             alt={property.title}
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className={`absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${isSold ? 'grayscale-[20%]' : ''}`}
             loading="lazy"
           />
         ) : (
           <div className="relative z-10 flex flex-col justify-between h-full">
             {/* Top Badges */}
             <div className="flex items-center justify-between gap-2">
-              <div className="bg-emerald-500/20 backdrop-blur-md text-emerald-300 border border-emerald-500/40 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-xs flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                <span>{property.verificationStatus}</span>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {isSold ? (
+                  <div className="bg-rose-600 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full shadow-md tracking-wider">
+                    Sold
+                  </div>
+                ) : (
+                  <div className="bg-emerald-500/30 backdrop-blur-md text-emerald-300 border border-emerald-500/50 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-xs flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <span>Available</span>
+                  </div>
+                )}
+                {property.video_url && (
+                  <div className="bg-blue-600/90 backdrop-blur-md text-white border border-blue-400/40 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-xs">
+                    <Video className="w-3 h-3 text-amber-300" />
+                    <span>Video Tour</span>
+                  </div>
+                )}
               </div>
 
               <button
@@ -96,9 +111,23 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         {property.images && property.images.length > 0 && (
           <>
             <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none z-10">
-              <div className="bg-slate-950/85 backdrop-blur-md text-emerald-400 border border-emerald-500/30 text-[10.5px] font-bold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1.5 pointer-events-auto">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                <span>{property.verificationStatus}</span>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {isSold ? (
+                  <div className="pointer-events-auto bg-rose-600 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full shadow-md tracking-wider">
+                    Sold
+                  </div>
+                ) : (
+                  <div className="pointer-events-auto bg-slate-950/85 backdrop-blur-md text-emerald-400 border border-emerald-500/30 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <span>Available</span>
+                  </div>
+                )}
+                {property.video_url && (
+                  <div className="pointer-events-auto bg-blue-600/90 backdrop-blur-md text-white border border-blue-400/40 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-xs">
+                    <Video className="w-3 h-3 text-amber-300" />
+                    <span>Video Tour</span>
+                  </div>
+                )}
               </div>
 
               <button

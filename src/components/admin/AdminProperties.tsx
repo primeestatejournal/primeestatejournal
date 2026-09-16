@@ -19,14 +19,17 @@ import {
   ArrowUpDown,
   RefreshCw,
   Copy,
-  ShieldCheck
+  ShieldCheck,
+  Video,
+  ArrowLeftRight
 } from 'lucide-react';
 import { DbProperty } from '../../types';
 import { 
   fetchAdminProperties, 
   createAdminProperty, 
   updateAdminProperty, 
-  deleteAdminProperty 
+  deleteAdminProperty,
+  togglePropertyAvailability
 } from '../../lib/supabase';
 
 interface AdminPropertiesProps {
@@ -87,6 +90,8 @@ CREATE POLICY "Allow public and admin delete to properties" ON public.properties
     gallery_image_url_2: '',
     gallery_image_url_3: '',
     gallery_image_url_4: '',
+    video_url: '',
+    availability_status: 'available' as 'available' | 'sold',
   });
 
   const loadProperties = async () => {
@@ -124,6 +129,8 @@ CREATE POLICY "Allow public and admin delete to properties" ON public.properties
       gallery_image_url_2: '',
       gallery_image_url_3: '',
       gallery_image_url_4: '',
+      video_url: '',
+      availability_status: 'available',
     });
     setErrorMessage(null);
     setIsModalOpen(true);
@@ -142,6 +149,8 @@ CREATE POLICY "Allow public and admin delete to properties" ON public.properties
       gallery_image_url_2: prop.gallery_image_url_2 || '',
       gallery_image_url_3: prop.gallery_image_url_3 || '',
       gallery_image_url_4: prop.gallery_image_url_4 || '',
+      video_url: prop.video_url || '',
+      availability_status: prop.availability_status || 'available',
     });
     setErrorMessage(null);
     setIsModalOpen(true);
@@ -151,6 +160,27 @@ CREATE POLICY "Allow public and admin delete to properties" ON public.properties
     setIsModalOpen(false);
     setEditingProperty(null);
     if (onModalClose) onModalClose();
+  };
+
+  const handleToggleStatus = async (prop: DbProperty) => {
+    const prevStatus = prop.availability_status || 'available';
+    const targetStatus = prevStatus === 'sold' ? 'available' : 'sold';
+
+    // Optimistic UI update
+    setProperties((prev) =>
+      prev.map((p) => (p.id === prop.id ? { ...p, availability_status: targetStatus } : p))
+    );
+
+    const res = await togglePropertyAvailability(prop.id, prevStatus);
+    if (!res.success) {
+      // Revert upon failure
+      setProperties((prev) =>
+        prev.map((p) => (p.id === prop.id ? { ...p, availability_status: prevStatus } : p))
+      );
+      showToast(`Error updating status: ${res.error || 'Request failed'}`);
+    } else {
+      showToast(`Property marked as ${targetStatus.toUpperCase()}`);
+    }
   };
 
   const handleSaveProperty = async (e: React.FormEvent) => {
@@ -181,6 +211,8 @@ CREATE POLICY "Allow public and admin delete to properties" ON public.properties
       gallery_image_url_2: formData.gallery_image_url_2.trim() || null,
       gallery_image_url_3: formData.gallery_image_url_3.trim() || null,
       gallery_image_url_4: formData.gallery_image_url_4.trim() || null,
+      video_url: formData.video_url.trim() || null,
+      availability_status: formData.availability_status,
     };
 
     if (editingProperty) {
@@ -248,7 +280,7 @@ CREATE POLICY "Allow public and admin delete to properties" ON public.properties
             <span>Properties Inventory & Management</span>
           </h2>
           <p className="text-xs text-slate-400 mt-1">
-            CRUD interface synced directly to your Supabase <span className="font-mono text-amber-400 text-[11px]">public.properties</span> table.
+            Production management interface synced with the <span className="font-mono text-amber-400 text-[11px]">public.properties</span> table.
           </p>
         </div>
 
@@ -280,7 +312,7 @@ CREATE POLICY "Allow public and admin delete to properties" ON public.properties
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search properties by title, keyword, or agent phone..."
+            placeholder="Search properties by title, keyword, status, or phone..."
             className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:border-[#155EEF] focus:ring-1 focus:ring-[#155EEF] outline-none"
           />
         </div>
@@ -293,7 +325,7 @@ CREATE POLICY "Allow public and admin delete to properties" ON public.properties
       {loading ? (
         <div className="bg-[#0B1728] border border-slate-800 rounded-3xl p-16 text-center space-y-3">
           <div className="w-8 h-8 border-2 border-[#155EEF] border-t-amber-400 rounded-full animate-spin mx-auto" />
-          <p className="text-xs text-slate-400 font-medium">Fetching verified properties from Supabase...</p>
+          <p className="text-xs text-slate-400 font-medium">Fetching verified properties from database...</p>
         </div>
       ) : filteredProperties.length === 0 ? (
         <div className="bg-[#0B1728] border border-slate-800 rounded-3xl p-16 text-center space-y-4 shadow-xl">
@@ -321,9 +353,10 @@ CREATE POLICY "Allow public and admin delete to properties" ON public.properties
               <thead className="bg-slate-950/80 text-slate-400 font-bold uppercase text-[10px] tracking-wider border-b border-slate-800">
                 <tr>
                   <th className="py-3.5 px-4 sm:px-6">Property / Title</th>
+                  <th className="py-3.5 px-4">Status</th>
                   <th className="py-3.5 px-4">Price (Naira ₦)</th>
                   <th className="py-3.5 px-4">Agent Contacts</th>
-                  <th className="py-3.5 px-4">Gallery Images</th>
+                  <th className="py-3.5 px-4">Media & Video</th>
                   <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
               </thead>
@@ -335,24 +368,32 @@ CREATE POLICY "Allow public and admin delete to properties" ON public.properties
                     prop.gallery_image_url_3,
                     prop.gallery_image_url_4,
                   ].filter(Boolean).length;
+                  const isSold = prop.availability_status === 'sold';
 
                   return (
                     <tr key={prop.id} className="hover:bg-slate-900/60 transition-colors group">
                       {/* Title & Featured Image */}
                       <td className="py-4 px-4 sm:px-6">
                         <div className="flex items-center gap-3">
-                          {prop.featured_image_url ? (
-                            <img
-                              src={prop.featured_image_url}
-                              alt={prop.title}
-                              referrerPolicy="no-referrer"
-                              className="w-14 h-14 rounded-xl object-cover border border-slate-800 shrink-0 shadow-sm"
-                            />
-                          ) : (
-                            <div className="w-14 h-14 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0 text-blue-400">
-                              <Building2 className="w-6 h-6" />
-                            </div>
-                          )}
+                          <div className="relative shrink-0">
+                            {prop.featured_image_url ? (
+                              <img
+                                src={prop.featured_image_url}
+                                alt={prop.title}
+                                referrerPolicy="no-referrer"
+                                className="w-14 h-14 rounded-xl object-cover border border-slate-800 shadow-sm"
+                              />
+                            ) : (
+                              <div className="w-14 h-14 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-blue-400">
+                                <Building2 className="w-6 h-6" />
+                              </div>
+                            )}
+                            {isSold && (
+                              <span className="absolute -top-1.5 -left-1.5 bg-rose-600 text-white text-[9px] font-black uppercase px-1.5 py-0.5 rounded shadow">
+                                Sold
+                              </span>
+                            )}
+                          </div>
                           <div className="min-w-0 max-w-xs sm:max-w-sm">
                             <p className="font-bold text-white text-xs truncate group-hover:text-amber-400 transition-colors">
                               {prop.title}
@@ -360,9 +401,45 @@ CREATE POLICY "Allow public and admin delete to properties" ON public.properties
                             <p className="text-[11px] text-slate-400 line-clamp-1 mt-0.5 font-normal">
                               {prop.description || 'No description provided.'}
                             </p>
-                            <span className="text-[10px] text-slate-500 font-mono">
-                              ID: {prop.id.substring(0, 13)}...
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-[10px] text-slate-500 font-mono">
+                                ID: {prop.id.substring(0, 13)}...
+                              </span>
+                              {prop.video_url && (
+                                <span className="inline-flex items-center gap-1 text-[10px] text-blue-400 font-medium">
+                                  <Video className="w-2.5 h-2.5" />
+                                  <span>Video Tour</span>
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Availability Status Badge & Toggle */}
+                      <td className="py-4 px-4 whitespace-nowrap">
+                        <div className="space-y-1.5">
+                          {isSold ? (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-500/15 text-rose-300 border border-rose-500/30 shadow-xs">
+                              <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+                              Sold
                             </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-xs">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                              Available
+                            </span>
+                          )}
+                          <div>
+                            <button
+                              type="button"
+                              onClick={() => handleToggleStatus(prop)}
+                              title={`Switch availability to ${isSold ? 'Available' : 'Sold'}`}
+                              className="inline-flex items-center gap-1 text-[10px] text-slate-400 hover:text-amber-300 font-semibold transition-colors px-1.5 py-0.5 rounded bg-slate-950/70 hover:bg-slate-900 border border-slate-800"
+                            >
+                              <ArrowLeftRight className="w-2.5 h-2.5 text-amber-400" />
+                              <span>Mark {isSold ? 'Available' : 'Sold'}</span>
+                            </button>
                           </div>
                         </div>
                       </td>
@@ -386,13 +463,27 @@ CREATE POLICY "Allow public and admin delete to properties" ON public.properties
                         </div>
                       </td>
 
-                      {/* Gallery count */}
+                      {/* Media & Video */}
                       <td className="py-4 px-4 whitespace-nowrap">
-                        <div className="flex items-center gap-1">
+                        <div className="flex flex-col gap-1.5">
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-[11px] font-semibold text-slate-300">
                             <ImageIcon className="w-3 h-3 text-amber-400" />
                             <span>{galleryCount} / 4 Views</span>
                           </span>
+                          {prop.video_url ? (
+                            <a
+                              href={prop.video_url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-blue-500/15 border border-blue-500/30 text-[10px] font-semibold text-blue-300 hover:text-white transition-colors"
+                              title={prop.video_url}
+                            >
+                              <Video className="w-2.5 h-2.5 text-blue-400" />
+                              <span>View Video</span>
+                            </a>
+                          ) : (
+                            <span className="text-[10px] text-slate-500 italic">No video linked</span>
+                          )}
                         </div>
                       </td>
 
@@ -506,7 +597,7 @@ CREATE POLICY "Allow public and admin delete to properties" ON public.properties
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-amber-300 font-bold">
                         <ShieldCheck className="w-4 h-4 text-amber-400" />
-                        <span>Supabase Row-Level Security Fix</span>
+                        <span>Database Row-Level Security Fix</span>
                       </div>
                       <button
                         type="button"
@@ -518,7 +609,7 @@ CREATE POLICY "Allow public and admin delete to properties" ON public.properties
                       </button>
                     </div>
                     <p className="text-slate-300 text-[11px] leading-relaxed">
-                      Your Supabase database table <span className="font-mono text-amber-300">public.properties</span> has Row-Level Security enabled without public insert policies. To fix this: click <strong>"Copy 1-Click RLS Fix SQL"</strong>, open your <strong className="text-white">Supabase Dashboard &gt; SQL Editor &gt; New Query</strong>, paste the script, and click <strong className="text-emerald-400">Run</strong>. Then click Save again!
+                      Your database table <span className="font-mono text-amber-300">public.properties</span> has Row-Level Security enabled without public insert policies. To fix this: click <strong>"Copy 1-Click RLS Fix SQL"</strong>, open your <strong className="text-white">Database Console &gt; SQL Editor</strong>, paste the script, and click <strong className="text-emerald-400">Run</strong>. Then click Save again!
                     </p>
                   </div>
                 )}
@@ -559,6 +650,66 @@ CREATE POLICY "Allow public and admin delete to properties" ON public.properties
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-8 pr-3.5 py-2.5 text-xs text-white font-mono focus:border-[#155EEF] focus:ring-1 focus:ring-[#155EEF] outline-none"
                     />
                   </div>
+                </div>
+              </div>
+
+              {/* Status Selector & Video URL */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-950/60 p-4 rounded-2xl border border-slate-800/80">
+                {/* Status Selector */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center justify-between">
+                    <span>Availability Status *</span>
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${formData.availability_status === 'sold' ? 'bg-rose-500/20 text-rose-300' : 'bg-emerald-500/20 text-emerald-300'}`}>
+                      {formData.availability_status === 'sold' ? 'Sold' : 'Available'}
+                    </span>
+                  </label>
+                  <div className="grid grid-cols-2 gap-2 p-1 bg-slate-900 rounded-xl border border-slate-800">
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, availability_status: 'available' })}
+                      className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all ${
+                        formData.availability_status === 'available'
+                          ? 'bg-emerald-600 text-white shadow-md shadow-emerald-900/30'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                      <span>Available</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, availability_status: 'sold' })}
+                      className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all ${
+                        formData.availability_status === 'sold'
+                          ? 'bg-rose-600 text-white shadow-md shadow-rose-900/30'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <span className="w-2 h-2 rounded-full bg-rose-400" />
+                      <span>Sold</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Video URL Input */}
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <Video className="w-3.5 h-3.5 text-blue-400" />
+                      <span>Property Video URL (YouTube or Vimeo)</span>
+                    </span>
+                    <span className="text-[10px] text-slate-500 font-normal">Optional</span>
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.video_url}
+                    onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
+                    placeholder="e.g. https://www.youtube.com/watch?v=... or https://vimeo.com/..."
+                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:border-[#155EEF] focus:ring-1 focus:ring-[#155EEF] outline-none"
+                  />
+                  <p className="text-[11px] text-slate-400 mt-1">
+                    Accepts YouTube or Vimeo links. An interactive HD video tour player will be embedded for potential buyers.
+                  </p>
                 </div>
               </div>
 
@@ -752,7 +903,7 @@ CREATE POLICY "Allow public and admin delete to properties" ON public.properties
                   ) : (
                     <>
                       <Check className="w-4 h-4 text-amber-300" />
-                      <span>{editingProperty ? 'Update Property Listing' : 'Save to Supabase'}</span>
+                      <span>{editingProperty ? 'Update Property Listing' : 'Save Property Listing'}</span>
                     </>
                   )}
                 </button>

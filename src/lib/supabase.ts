@@ -132,7 +132,11 @@ export async function fetchSupabaseProperties(): Promise<Property[] | null> {
     // Map DbProperty format or full Property format
     return data.map((item: any) => {
       if (item.priceNaira !== undefined) {
-        return item as Property;
+        return {
+          ...item,
+          video_url: item.video_url || null,
+          availability_status: item.availability_status === 'sold' ? 'sold' : 'available',
+        } as Property;
       }
       // Map from DbProperty columns
       const pNaira = Number(item.price_naira) || 0;
@@ -170,6 +174,8 @@ export async function fetchSupabaseProperties(): Promise<Property[] | null> {
         carouselCategories: ['diaspora_favorites', 'luxury_residences'],
         developerName: item.developer_name || 'Prime Estate Developers',
         developerVerified: true,
+        video_url: item.video_url || null,
+        availability_status: item.availability_status === 'sold' ? 'sold' : 'available',
         dossier: {
           registrySearchDate: new Date().toISOString().split('T')[0],
           landsRegistryRef: 'LR-NG-2024-991',
@@ -326,6 +332,8 @@ export async function fetchAdminProperties(): Promise<DbProperty[]> {
       gallery_image_url_2: item.gallery_image_url_2 || (item.images && item.images[2]) || null,
       gallery_image_url_3: item.gallery_image_url_3 || (item.images && item.images[3]) || null,
       gallery_image_url_4: item.gallery_image_url_4 || (item.images && item.images[4]) || null,
+      video_url: item.video_url || null,
+      availability_status: (item.availability_status === 'sold' ? 'sold' : 'available') as 'available' | 'sold',
       created_at: item.created_at || new Date().toISOString(),
       updated_at: item.updated_at || new Date().toISOString(),
     }));
@@ -354,6 +362,7 @@ export async function createAdminProperty(
   const newProp: DbProperty = {
     ...propertyData,
     id,
+    availability_status: propertyData.availability_status || 'available',
     created_at: timestamp,
     updated_at: timestamp,
   };
@@ -387,6 +396,8 @@ export async function createAdminProperty(
           gallery_image_url_2: newProp.gallery_image_url_2,
           gallery_image_url_3: newProp.gallery_image_url_3,
           gallery_image_url_4: newProp.gallery_image_url_4,
+          video_url: newProp.video_url || null,
+          availability_status: newProp.availability_status || 'available',
           created_at: timestamp,
           updated_at: timestamp,
         },
@@ -484,6 +495,55 @@ export async function deleteAdminProperty(id: string): Promise<{ success: boolea
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete property' };
   }
+}
+
+/** Toggle availability status between 'available' and 'sold' */
+export async function togglePropertyAvailability(
+  id: string,
+  currentStatus: 'available' | 'sold'
+): Promise<{ success: boolean; newStatus: 'available' | 'sold'; error?: string }> {
+  const newStatus = currentStatus === 'sold' ? 'available' : 'sold';
+  const res = await updateAdminProperty(id, { availability_status: newStatus });
+  if (res.error) {
+    return { success: false, newStatus: currentStatus, error: res.error };
+  }
+  return { success: true, newStatus };
+}
+
+/** Parses YouTube or Vimeo links into secure embeddable URLs for standard iframes */
+export function getEmbedVideoUrl(url?: string | null): string | null {
+  if (!url || typeof url !== 'string') return null;
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+
+  // If already standard iframe embed URL
+  if (trimmed.includes('youtube.com/embed/') || trimmed.includes('player.vimeo.com/video/')) {
+    return trimmed;
+  }
+
+  // YouTube standard or short links:
+  // - https://www.youtube.com/watch?v=VIDEO_ID
+  // - https://youtu.be/VIDEO_ID
+  // - https://www.youtube.com/shorts/VIDEO_ID
+  const ytMatch = trimmed.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+  if (ytMatch && ytMatch[1]) {
+    return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=0&rel=0`;
+  }
+
+  // Vimeo links:
+  // - https://vimeo.com/VIDEO_ID
+  // - https://vimeo.com/channels/staffpicks/VIDEO_ID
+  const vimeoMatch = trimmed.match(/(?:vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|))(\d+)/i);
+  if (vimeoMatch && vimeoMatch[1]) {
+    return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+  }
+
+  // Fallback for direct valid web URLs
+  if (trimmed.startsWith('https://') || trimmed.startsWith('http://')) {
+    return trimmed;
+  }
+
+  return null;
 }
 
 // ----------------------------------------------------
