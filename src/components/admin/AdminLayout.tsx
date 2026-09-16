@@ -55,7 +55,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
     { id: 'properties', label: 'Properties Management', icon: Building2 },
     { id: 'blog', label: 'Blog Posts (WYSIWYG)', icon: FileText },
     { id: 'profile', label: 'Admin Profile & Security', icon: User },
-    { id: 'database', label: 'Database SQL Desk', icon: Database, badge: 'Supabase' },
+    { id: 'database', label: 'Database SQL Desk', icon: Database, badge: 'Cloud' },
   ];
 
   const adminName = profile?.full_name || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Chief Admin';
@@ -144,7 +144,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
               <div className="flex items-center gap-2">
                 <Database className="w-3.5 h-3.5" />
                 <span className="font-semibold text-[11px]">
-                  {isConfigured ? 'Supabase Connected' : 'Sandbox Storage'}
+                  {isConfigured ? 'Cloud Connected' : 'Sandbox Storage'}
                 </span>
               </div>
               <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-black/40">

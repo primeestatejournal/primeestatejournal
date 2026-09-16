@@ -337,7 +337,7 @@ function AppContent() {
                     <>
                       <p className="text-base font-bold text-slate-800">No properties in database yet</p>
                       <p className="text-xs text-slate-500 max-w-md mx-auto">
-                        All demo properties have been cleared. As verified properties are registered or fetched from your connected Supabase database, they will be displayed here.
+                        All demo properties have been cleared. As verified properties are registered or fetched from your connected database, they will be displayed here.
                       </p>
                       <div className="flex items-center justify-center gap-3 pt-2">
                         <button
@@ -346,13 +346,13 @@ function AppContent() {
                           className="bg-[#155EEF] hover:bg-blue-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2"
                         >
                           <Sparkles className="w-3.5 h-3.5" />
-                          {isLoadingProps ? 'Checking Supabase...' : 'Refresh Database'}
+                          {isLoadingProps ? 'Syncing Database...' : 'Refresh Database'}
                         </button>
                         <button
                           onClick={() => setActiveTab('client_portal')}
                           className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-4 py-2.5 rounded-xl transition-all"
                         >
-                          View Supabase Setup Desk
+                          View Database Portal
                         </button>
                       </div>
                     </>

@@ -275,13 +275,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setSession(data.session);
           await loadUserProfile(data.user);
           setLoading(false);
-          return { success: true, message: 'Authenticated via Supabase' };
+          return { success: true, message: 'Authenticated successfully' };
         }
 
-        // If Supabase returned an error (e.g. Email not confirmed, Invalid credentials, or user not in Supabase yet)
-        console.warn('Supabase sign-in response notice:', error?.message);
+        // If sign-in returned a notice
+        console.warn('Authentication response notice:', error?.message);
       } catch (err: any) {
-        console.warn('Supabase sign-in catch:', err?.message);
+        console.warn('Authentication catch:', err?.message);
       }
     }
 
@@ -351,103 +351,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { error: 'Invalid email or password. Please verify your credentials or use the Direct Access button.' };
   };
 
-  // Sign Up / Register Admin with instant dashboard access
+  // Sign Up is disabled - Public admin registration is strictly disallowed
   const signUp = async (
-    email: string, 
-    password: string, 
-    fullName: string
+    _email: string, 
+    _password: string, 
+    _fullName: string
   ): Promise<{ error?: string; success?: boolean; needsEmailConfirmation?: boolean }> => {
-    setLoading(true);
-    const cleanEmail = email.trim().toLowerCase();
-    const cleanPass = password.trim();
-    const cleanName = fullName.trim() || cleanEmail.split('@')[0];
-
-    if (!cleanEmail || !cleanPass) {
-      setLoading(false);
-      return { error: 'Please enter both your email address and password.' };
-    }
-
-    const supabase = getSupabase();
-    let supabaseUserId: string | null = null;
-
-    // 1. Try Supabase Registration if available
-    if (supabase) {
-      try {
-        const { data, error } = await supabase.auth.signUp({
-          email: cleanEmail,
-          password: cleanPass,
-          options: {
-            data: { full_name: cleanName },
-            emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/admin` : undefined,
-          },
-        });
-
-        if (error) {
-          console.warn('Supabase signUp warning:', error.message);
-          // If already registered in Supabase, we still proceed to grant admin session
-        }
-
-        if (data?.user) {
-          supabaseUserId = data.user.id;
-        }
-      } catch (err: any) {
-        console.warn('Supabase signUp error caught:', err?.message);
-      }
-    }
-
-    // 2. Create and activate Admin Session immediately
-    const adminId = supabaseUserId || `admin-usr-${cleanEmail.replace(/[^a-zA-Z0-9]/g, '')}-${Date.now()}`;
-    
-    const newAdminUser: User = {
-      id: adminId,
-      app_metadata: { provider: 'email' },
-      user_metadata: { full_name: cleanName },
-      aud: 'authenticated',
-      created_at: new Date().toISOString(),
-      email: cleanEmail,
-    } as any;
-
-    const newAdminProfile: Profile = {
-      id: adminId,
-      full_name: cleanName,
-      email: cleanEmail,
-      role: 'admin',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
-
-    const newAdminSession: Session = {
-      access_token: 'admin-vault-token-' + Date.now(),
-      token_type: 'bearer',
-      expires_in: 86400,
-      refresh_token: 'admin-refresh-token',
-      user: newAdminUser,
-    } as any;
-
-    // Persist to local admin registry and active session
-    saveLocalAdminAccount({
-      email: cleanEmail,
-      password: cleanPass,
-      fullName: cleanName,
-      role: 'admin',
-      createdAt: new Date().toISOString(),
-    });
-
-    localStorage.setItem('pej_active_admin_user', JSON.stringify({ user: newAdminUser, profile: newAdminProfile }));
-
-    setUser(newAdminUser);
-    setSession(newAdminSession);
-    setProfile(newAdminProfile);
-    setLoading(false);
-
-    // Save profile to Supabase public.profiles table if reachable
-    if (supabase) {
-      upsertAdminProfile(newAdminProfile).catch(() => {});
-    }
-
     return { 
-      success: true, 
-      needsEmailConfirmation: false 
+      error: 'Administrator self-registration is disabled. Access is restricted to designated personnel only.',
+      success: false 
     };
   };
 
@@ -522,7 +434,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error) {
         // Provide graceful fallback
         instantAdminLogin(cleanEmail, cleanEmail.split('@')[0]);
-        return { message: `Supabase notice: ${error.message}. Instant admin session activated for testing.` };
+        return { message: `Notice: ${error.message}. Instant admin session activated for testing.` };
       }
       return { message: `Magic link & 6-digit OTP sent to ${cleanEmail}. Check your inbox!` };
     } catch (err: any) {
